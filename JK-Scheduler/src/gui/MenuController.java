@@ -36,6 +36,11 @@ public class MenuController {
 		});
 		
 		MenuItem changePassword = new MenuItem("Change Password");		
+		changePassword.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent a) {
+				Main.getWindowManager().showChangePassword();
+			}
+		});
 		
 		accountMenu.getItems().addAll(create, changeUsername, changePassword);
 		return accountMenu;
