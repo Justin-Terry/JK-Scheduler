@@ -1,6 +1,7 @@
 package gui;
 
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
 
 public class SceneController {
 	CalendarScene calendar;
@@ -8,10 +9,13 @@ public class SceneController {
 
 	public SceneController() {
 		calendar = new CalendarScene();
+	}	
+	
+	public BorderPane getCalenderPane(int n) {
+		return calendar.getCalendarPane(n);
 	}
 	
-	public Scene getCalendarScene() {
-		currentScene = calendar.getCalendarScene(2);
-		return currentScene;
+	public CalendarScene getCalendar() {
+		return calendar;
 	}
 }

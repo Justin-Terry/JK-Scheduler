@@ -1,5 +1,6 @@
 package application;
 	
+import gui.SettingsWindow;
 import gui.WindowManager;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -8,7 +9,7 @@ import javafx.scene.layout.BorderPane;
 
 
 public class Main extends Application {
-	private Settings settings = new Settings();
+	private static Settings settings = new Settings();
 	private static WindowManager winMan;
 	
 	@Override
@@ -23,5 +24,9 @@ public class Main extends Application {
 	
 	public static WindowManager getWindowManager() {
 		return winMan;
+	}
+	
+	public static Settings getSettings() {
+		return settings;
 	}
 }

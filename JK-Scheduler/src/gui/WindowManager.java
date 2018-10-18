@@ -18,8 +18,8 @@ public class WindowManager {
 		BorderPane bp = new BorderPane();
 		Scene mainScene = new Scene(bp, mainStage.getHeight(), mainStage.getWidth());
 		bp.setTop(menuCon.getMenuBar());
-		
-		setMainStage(sceneCon.getCalendarScene());
+		bp.setCenter(sceneCon.getCalenderPane(0));
+		setMainStage(mainScene);
 		mainStage.show();		
 	}
 	
@@ -42,12 +42,21 @@ public class WindowManager {
 		ChangePasswordWindow changePass = new ChangePasswordWindow();
 	}
 	
+	public void showSettingsWindow() {
+		SettingsWindow settingsWindow = new SettingsWindow();
+		settingsWindow.show();
+	}
+	
 	public Stage getMainStage() {
 		return mainStage;
 	}
 	
 	public void setMainStage(Scene s) {
 		mainStage.setScene(s);
+	}
+	
+	public CalendarScene getMainCalendarPane() {
+		return sceneCon.getCalendar();
 	}
 	
 	
