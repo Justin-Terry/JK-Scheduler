@@ -1,6 +1,7 @@
 package gui;
 
 import application.Main;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -29,19 +30,20 @@ public class CalendarScene {
 	}
 
 	private void createMonthScene() {
+		final int WIDTH = 800,
+				HEIGHT = 600;
 		int numRows = 5;
 		int numCols = 7;
 		calendarGrid = new GridPane();
-		calendarGrid.setPrefSize(600, 800);
-		calendarGrid.setPadding(new Insets(10));
+		calendarGrid.setPrefSize(WIDTH, HEIGHT);
+		calendarGrid.setPadding(new Insets(50));
 		calendarGrid.setGridLinesVisible(true);
-		theScene = new Scene(calendarGrid, 800, 600);
-
+		theScene = new Scene(calendarGrid, HEIGHT, WIDTH);
 
 		ColumnConstraints calendarBoxColCons = new ColumnConstraints();
 		RowConstraints calendarBoxRowCons = new RowConstraints();
-		calendarBoxColCons.setPercentWidth(100 / 7);
-		calendarBoxRowCons.setPercentHeight(100 / 5);
+		calendarBoxColCons.setPercentWidth(100 / numCols);
+		calendarBoxRowCons.setPercentHeight(100 / numRows);
 		for (int i = 0; i < numRows; i++) {
 			calendarGrid.getRowConstraints().add(calendarBoxRowCons);
 		}
@@ -54,7 +56,13 @@ public class CalendarScene {
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 7; j++) {
 				if (d < 32) {
-					calendarGrid.add(new Label(new CalendarBox(d).getDateNumberString()), j, i);
+					Label dateLabel = new Label(new CalendarBox(d).getDateNumberString());
+					double cellWidth = WIDTH/numRows,
+							cellHeight = HEIGHT/numCols;
+
+					calendarGrid.add(dateLabel, j, i);
+					calendarGrid.setMargin(dateLabel,
+											new Insets(0, 0, cellHeight*1.0, cellWidth*0.05));
 					d++;
 				}
 			}
