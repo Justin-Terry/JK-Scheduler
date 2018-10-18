@@ -1,5 +1,6 @@
 package gui;
 
+import application.Main;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -88,6 +89,8 @@ public class CreateUserWindow {
 		
 		// Adding button and centering it under the other rows
 		gp.add(submitButton, 0, 9);
+		
+		
 		gp.setColumnSpan(submitButton, 2);
 		gp.setHalignment(submitButton, HPos.CENTER);
 

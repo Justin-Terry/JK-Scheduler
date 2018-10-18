@@ -11,14 +11,16 @@ import javafx.scene.layout.BorderPane;
 public class Main extends Application {
 	private static Settings settings = new Settings();
 	private static WindowManager winMan;
+	private static UserController userCon;
 	
 	@Override
 	public void start(Stage primaryStage) {
+		
 		winMan = new WindowManager(primaryStage);
 	}
 	
 	public static void main(String[] args) {
-		
+		userCon = new UserController();
 		launch(args);
 	}
 	
@@ -28,5 +30,9 @@ public class Main extends Application {
 	
 	public static Settings getSettings() {
 		return settings;
+	}
+	
+	public static UserController getUserCon() {
+		return userCon;
 	}
 }
