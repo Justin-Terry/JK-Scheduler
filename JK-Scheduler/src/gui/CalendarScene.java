@@ -54,6 +54,7 @@ public class CalendarScene {
 
 	}
 
+
 	private void createMonthScene(String month) {
 		Label monthLabel = new Label(month);
 		monthLabel.setStyle("-fx-font: 64 arial;");
@@ -102,6 +103,7 @@ public class CalendarScene {
 		for (int i = 1; i < numRows; i++) {
 			for (int j = 0; j < 7; j++) {
 				if (d < 32) {
+
 					CalendarBox temp = new CalendarBox(d, "000000");
 					boxes.add(temp);
 					Pane tempRec = temp.getCalendarBox();
