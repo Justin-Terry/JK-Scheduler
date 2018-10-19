@@ -1,24 +1,39 @@
 package gui;
 
 import application.Main;
+import application.User;
+import application.UserController;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 
 public class CreateUserWindow {
 	Stage stage;
 	GridPane gp;
 	Scene scene;
 
-	private String[] fieldNames = { "Username", "Password", "First Name", "Last Name", "Street", "City", "State",
-			"Zip Code", "Phone Number" };
+	private static String[] fieldNames = {  "Username", "Password", "Password Confirmation",
+											"First Name", "Last Name",
+											"Phone Number", "E-Mail" ,
+											"Street", "City", "State", "Zip Code"};
+
+	public static final int getNumFields() {
+		return fieldNames.length;
+	};
+
 
 	public CreateUserWindow() {
 		stage = new Stage();
@@ -28,19 +43,17 @@ public class CreateUserWindow {
 		gp.setPadding(new Insets(10));
 		gp.setVgap(10);
 		gp.setHgap(10);
-		scene = new Scene(gp, 300, 360);
+		scene = new Scene(gp, 420, 36*(fieldNames.length+2));
 
 		layoutGrid();
 		stage.setScene(scene);
 		stage.show();
-
 	}
 
 	public void layoutGrid() {
 		// Keeps window on top of everything else
 		stage.initModality(Modality.APPLICATION_MODAL);
-		
-		stage.setMinHeight(360);
+		stage.setMinHeight(40*(fieldNames.length+1));
 		stage.setMinWidth(300);
 		
 		// ColumnConstraints to define how much of the scene each column should take up
@@ -51,49 +64,68 @@ public class CreateUserWindow {
 		gp.getColumnConstraints().addAll(col1, col2);
 		
 		Button submitButton = new Button("Submit");
-		
-		// Creating each field separately in order to make it easy to get text from them later
-		TextField usernameField = new TextField();
-		usernameField.setPromptText("Enter Username");
-		TextField passwordField = new TextField();
-		passwordField.setPromptText("Enter Password");
-		TextField firstNameField = new TextField();
-		firstNameField.setPromptText("Enter First Name");
-		TextField lastNameField = new TextField();
-		lastNameField.setPromptText("Enter Last Name");
-		TextField streetField = new TextField();
-		streetField.setPromptText("Enter Street Address");
-		TextField cityField = new TextField();
-		cityField.setPromptText("Enter City");
-		TextField stateField = new TextField();
-		stateField.setPromptText("Enter State");
-		TextField zipField = new TextField();
-		zipField.setPromptText("Enter Zip Code");
-		TextField phoneField = new TextField();
-		phoneField.setPromptText("Enter Phone Number");
-		
-		// Adding labels to the scene
-		for (int i = 0; i < fieldNames.length; i++) {
-			gp.add(new Label(fieldNames[i]), 0, i);
+
+		int i = 0;
+		ArrayList<TextField> textfields = new ArrayList<>();
+		for (String str : fieldNames) {
+			// Mask text field if it's a password
+			TextField tf = str.matches("(.*)?[Pp]assword(.*)") ? new PasswordField() : new TextField();
+
+			// Creating each field separately in order to make it easy to get text from them later
+			tf.setPromptText("Enter " + str);
+			textfields.add(tf);
+
+			// Add labels and label names
+			gp.add(new Label(str), 0, i);
+			gp.add(tf, 1, i);
+			i++;
 		}
-		// Adding fields to the scene
-		gp.add(usernameField, 1, 0);
-		gp.add(passwordField, 1, 1);
-		gp.add(firstNameField, 1, 2);
-		gp.add(lastNameField, 1, 3);
-		gp.add(streetField, 1, 4);
-		gp.add(cityField, 1, 5);
-		gp.add(stateField, 1, 6);
-		gp.add(zipField, 1, 7);
-		gp.add(phoneField, 1, 8);
-		
+
 		// Adding button and centering it under the other rows
-		gp.add(submitButton, 0, 9);
-		
-		
+		gp.add(submitButton, 0, i++);
 		gp.setColumnSpan(submitButton, 2);
 		gp.setHalignment(submitButton, HPos.CENTER);
 
+		/**
+		 * 	Cases:
+		 * 	Successful submit - replace submit button with green checkmark
+		 * 						(to prevent resubmission and notify user
+		 * 						of success)
+		 *	Unsuccessful submit - add error message box and allow user to
+		 *						  correct field(s)
+		 */
+		submitButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(final ActionEvent event) {
+				ArrayList<String> submission = new ArrayList<>();
 
+				for (TextField tf : textfields)
+					submission.add(tf.getText());
+
+				// Pass user submission to UserController for validation
+				if ( UserController.handledSubmission(submission) ) {
+					// Green checkmark
+				}
+				else {
+					// Submission error handling
+					Label error = new Label("Error - Invalid field(s)");
+					/**
+					 * add error message below submit button;
+					 * number of rows = all fields + submit button + error message
+					 */
+					gp.add(error, 0, getNumFields() + 1 + 1);
+					gp.setHalignment(error, HPos.CENTER);
+				}
+			}
+		});
+	}
+
+	private int longestField() {
+		int longest = 0;
+		for (String str : fieldNames) {
+			if (str.length() > 0)
+				longest = str.length();
+		}
+		return longest;
 	}
 }
