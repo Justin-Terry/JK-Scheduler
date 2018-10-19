@@ -58,8 +58,7 @@ public class MenuController {
 	
 	private Menu getSettingsMenu() {
 		Menu settingsMenu = new Menu("Settings");
-		MenuItem setRange = new MenuItem("Set Calendar Range");
-		MenuItem setColor = new MenuItem("Set Calendar Color");
+		MenuItem setColor = new MenuItem("Change Settings");
 		
 		setColor.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent a) {
@@ -67,7 +66,7 @@ public class MenuController {
 			}
 		});
 		
-		settingsMenu.getItems().addAll(setRange, setColor);
+		settingsMenu.getItems().addAll(setColor);
 		return settingsMenu;
 	}
 	

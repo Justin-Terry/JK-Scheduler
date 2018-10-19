@@ -32,7 +32,7 @@ public class CalendarScene {
 			"6:00pm", "7:00pm", "8:00pm", "9:00pm", "10:00pm", "11:00pm" };
 
 	private String calendarColor;
-	private ArrayList<CalendarBox> boxes = new ArrayList<CalendarBox>();
+	private ArrayList<CalendarBox> boxes;
 
 	public CalendarScene() {
 		calendarColor = Main.getSettings().getCalendarColor();
@@ -56,6 +56,7 @@ public class CalendarScene {
 
 
 	private void createMonthScene(String month) {
+		boxes = new ArrayList<CalendarBox>();
 		Label monthLabel = new Label(month);
 		monthLabel.setStyle("-fx-font: 64 arial;");
 
@@ -104,7 +105,7 @@ public class CalendarScene {
 			for (int j = 0; j < 7; j++) {
 				if (d < 32) {
 
-					CalendarBox temp = new CalendarBox(d, "000000");
+					CalendarBox temp = new CalendarBox(d, calendarColor);
 					boxes.add(temp);
 					Pane tempRec = temp.getCalendarBox();
 					calendarGrid.add(tempRec, j, i);
@@ -117,6 +118,7 @@ public class CalendarScene {
 	}
 
 	private void createWeekScene() {
+		boxes = new ArrayList<CalendarBox>();
 		int numRows = 2;
 		int numCols = 7;
 		borderPane = new BorderPane();
@@ -168,6 +170,7 @@ public class CalendarScene {
 	}
 
 	private void createDayScene() {
+		boxes = new ArrayList<CalendarBox>();
 		int numRows = 24;
 		int numCols = 2;
 		borderPane = new BorderPane();
@@ -182,6 +185,7 @@ public class CalendarScene {
 		ColumnConstraints hourColConstraints = new ColumnConstraints();
 		hourColConstraints.setPercentWidth(5);
 		calendarBoxColCons.setPercentWidth(95);
+		calendarBoxColCons.setFillWidth(true);
 		
 
 
@@ -190,9 +194,13 @@ public class CalendarScene {
 			Label temp = new Label(hourStrings[i]);
 			calendarGrid.add(temp, 0, i);
 			CalendarBox tempBox = new CalendarBox(i,calendarColor);
-			calendarGrid.add(tempBox.getCalendarBox(), 1, i);
-			
-			
+			calendarGrid.add(tempBox.getCalendarBox(), 1, i);	
+			calendarGrid.setMargin(tempBox.getCalendarBox(), cellMargin);
+			boxes.add(tempBox);
+		}
+		calendarGrid.getColumnConstraints().add(hourColConstraints);
+		for(int i = 1; i < numCols;i++) {
+			calendarGrid.getColumnConstraints().add(calendarBoxColCons);
 		}
 
 	}
