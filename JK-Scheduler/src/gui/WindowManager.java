@@ -1,5 +1,7 @@
 package gui;
 
+import application.Main;
+import application.Settings;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -7,20 +9,31 @@ import javafx.stage.Stage;
 public class WindowManager {
 	private Stage mainStage;
 	MenuController menuCon;
+	BorderPane bp;
 	SceneController sceneCon;
+	Settings settings;
 	
 	public WindowManager(Stage primaryStage) {
+		settings = Main.getSettings();
 		menuCon = new MenuController();
 		sceneCon = new SceneController();
 		mainStage = primaryStage;
 		mainStage.setTitle("JK Scheduler");
 		mainStage.setMaximized(true);
-		BorderPane bp = new BorderPane();
+		bp = new BorderPane();
 		Scene mainScene = new Scene(bp, mainStage.getHeight(), mainStage.getWidth());
 		bp.setTop(menuCon.getMenuBar());
-		bp.setCenter(sceneCon.getCalenderPane(0));
+		bp.setCenter(sceneCon.getCalenderPane(settings.getCalendarRange()));
 		setMainStage(mainScene);
-		mainStage.show();		
+		showMainStage();	
+	}
+	
+	public void showMainStage() {
+		mainStage.show();
+	}
+	
+	public void setCalendarPane(int n) {
+		bp.setCenter(sceneCon.getCalenderPane(n));
 	}
 	
 	public void showPopUpStage(Scene sce, String title) {

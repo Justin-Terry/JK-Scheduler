@@ -23,7 +23,6 @@ public class CalendarBox {
 	
 	public void setDateBoxColor(String c) {
 		dateRec.setStyle("-fx-background-color: #" + c + ";");
-		System.out.println("Setting to " + c);
 	}
 	
 }
