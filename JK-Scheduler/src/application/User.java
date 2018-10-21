@@ -3,13 +3,10 @@ package application;
 import java.util.ArrayList;
 
 public class User {
-	private String username,
-			password,
-			fName,
-			lName,
-			phone,
-			email,
-			userid;
+	private String username, password,
+			fName, lName, phone,
+			email;
+	private int userid;
 	private Address address;
 
 	/**
@@ -43,40 +40,55 @@ public class User {
 		/**
 		 * 	ADD USER ID FUNCTIONALITY
 		 */
-		if (userid == null) {
-			System.out.println("Error: User ID functionality not set.\n");
-			return;
-		}
+//		if (userid == null) {
+//			System.out.println("Error: User ID functionality not set.\n");
+//			return;
+//		}
 	}
 
 	public String getUsername() {
 		return username;
 	}
-	public void setUsername(String username) {
+	public void setUsername(final String username) {
 		this.username = username;
 	}
 	public String getPassword() {
 		return password;
 	}
-	public void setPassword(String password) {
+	public void setPassword(final String password) {
 		this.password = password;
 	}
 	public String getfName() {
 		return fName;
 	}
-	public void setfName(String fName) {
+	public void setfName(final String fName) {
 		this.fName = fName;
 	}
 	public String getlName() {
 		return lName;
 	}
-	public void setlName(String lName) {
+	public void setlName(final String lName) {
 		this.lName = lName;
 	}
 	public String getPhone() {
 		return phone;
 	}
-	public void setPhone(String phone) {
+	public void setPhone(final String phone) {
 		this.phone = phone;
+	}
+	public String getEmail() { return email; }
+	public void setEmail(final String email) { this.email = email; }
+	public void setID(final int userid) { this.userid = userid; }
+	public int getID() { return userid;	}
+
+	public String getStreet() {
+		return this.address.getStreet();
+	}
+	public String getCity() {
+		return this.address.getCity();
+	}
+	public String getState() { return this.address.getState(); }
+	public String getZip() {
+		return this.address.getZip();
 	}
 }
