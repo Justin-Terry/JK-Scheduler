@@ -8,6 +8,7 @@ public class User {
 			fName,
 			lName,
 			phone,
+			email,
 			userid;
 	private Address address;
 
@@ -18,20 +19,25 @@ public class User {
 	 */
 	public User(final ArrayList<String> args) {
 		// Enable assertions option must be enabled for assertions to work
-		final int NUM_ARGS = 9;
-		assert args.size() == NUM_ARGS :
-				String.format("User constructor expected %d arguments, received %d\n", NUM_ARGS, args.size());
-		username = args.get(0);
-		password = args.get(1);
-		fName = args.get(2);
-		lName = args.get(3);
-		phone = args.get(4);
+		final int NUM_ARGS = 10;
+		assert args.size() == NUM_ARGS : String.format(
+														"User constructor expected %d arguments, received %d\n",
+														NUM_ARGS,
+														args.size()
+													  );
 
+		int i = 0;
+		username = args.get(i++);
+		password = args.get(i++);
+		fName = args.get(i++);
+		lName = args.get(i++);
+		phone = args.get(i++);
+		email = args.get(i++);
 		address = new Address(
-								args.get(5),	// Street
-							  	args.get(6), 	// City
-							  	args.get(7),	// State
-							  	args.get(8)		// Zip
+								args.get(i++),	// Street
+							  	args.get(i++), 	// City
+							  	args.get(i++),	// State
+							  	args.get(i++)		// Zip
 							 );
 
 		/**

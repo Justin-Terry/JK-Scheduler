@@ -103,7 +103,7 @@ public class CreateUserWindow {
 					submission.add(tf.getText());
 
 				// Pass user submission to UserController for validation
-				if ( UserController.handledSubmission(submission) ) {
+				if ( UserController.handledAccountCreation(submission) ) {
 					// Green checkmark
 				}
 				else {
