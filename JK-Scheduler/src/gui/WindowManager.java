@@ -54,6 +54,8 @@ public class WindowManager {
 	public void showChangePassword() {
 		ChangePasswordWindow changePass = new ChangePasswordWindow();
 	}
+
+	public void showChangeUserInfo() { ChangeUserInfoWindow changeInfo = new ChangeUserInfoWindow(); }
 	
 	public void showSettingsWindow() {
 		SettingsWindow settingsWindow = new SettingsWindow();
