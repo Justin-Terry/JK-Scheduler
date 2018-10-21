@@ -13,8 +13,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-
 public class ChangeUserNameWindow {
 	private Stage stage;
 	private Scene scene;
