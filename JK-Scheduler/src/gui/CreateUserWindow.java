@@ -94,7 +94,7 @@ public class CreateUserWindow {
 		 *	Unsuccessful submit - add error message box and allow user to
 		 *						  correct field(s)
 		 */
-		/*submitButton.setOnAction(new EventHandler<ActionEvent>() {
+		submitButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(final ActionEvent event) {
 				ArrayList<String> submission = new ArrayList<>();
@@ -109,15 +109,15 @@ public class CreateUserWindow {
 				else {
 					// Submission error handling
 					Label error = new Label("Error - Invalid field(s)");
-					*//**
+					/**
 					 * add error message below submit button;
 					 * number of rows = all fields + submit button + error message
-					 *//*
+					 */
 					gp.add(error, 0, getNumFields() + 1 + 1);
 					gp.setHalignment(error, HPos.CENTER);
 				}
 			}
-		});*/
+		});
 	}
 
 	private int longestField() {
