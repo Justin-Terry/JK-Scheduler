@@ -1,12 +1,13 @@
 package application;
 
+import database.Database;
+
 import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class UserController {
+	private static User thisUser;
+
 	public UserController() {
 	}
 
@@ -25,21 +26,21 @@ public class UserController {
 		 *	To-do: produce error messages in password window
 		 *		   for each failure case
 		 */
-
-		if (!arg.matches(FieldValidator.USER)) {
+		if (!arg.matches(USER)) {
 			// Invalid username error
 			return false;
 		}
-		else if ( !DatabaseInterface.findUser(user) ) {
+		else if ( !Database.findUser(thisUser.getUsername()) ) {
 			// User account doesn't exist error
 			return false;
 		}
-		else if ( UsernameIsTaken() ) {
+		else if ( Database.findUser(arg) ) {
 			// Username is taken error
 			return false;
 		}
 		else {
-			changeUsername(user, arg);
+			Database.changeUsername(thisUser, arg);
+			thisUser.setUsername(arg);
 			return true;
 		}
 	}
@@ -50,64 +51,41 @@ public class UserController {
 		 *	To-do: produce error messages in password window
 		 *		   for each failure case
  		 */
-
-		if (!arg.matches(FieldValidator.PASS)) {
+		if (!arg.matches(PASS)) {
 			// Invalid password error
 			return false;
 		}
-		else if ( !DatabaseInterface.findUser(user) ) {
+		else if (!Database.findUser( thisUser.getUsername() )) {
 			// User account doesn't exist error
 			return false;
 		}
-		else if ( PasswordIsSame() ) {
+		else if ( arg == thisUser.getPassword() ) { /** DO NOT DO THIS **/
 			// Same password error
 			return false;
 		}
 		else {
-			changePassword(user, arg)
+			Database.changePassword(thisUser, arg);
+			thisUser.setPassword(arg); /** DON'T DO THIS **/
 			return true;
 		}
 	}
 
-	// Unfinished
-	// This should be a database interface method
-	private static final void changeUsername(User user, String name) {
-		Class.forName("org.apache.derby.jdbc.EmbeddedDriver").newInstance();
-		String username = "",
-			   password = "",
-		connection = DriverManager.getConnection(
-													"jdbc:derby://localhost:1527/test database",
-													user,
-													password
-												);
-
-		String query =
-		"UPDATE users" +
-		"SET user.username = " + name +
-		"WHERE user.username = " + user.getUsername();
-
-		PreparedStatement stmt = connection.prepareStatement(query);
-		stmt.executeUpdate();
-	}
-
-	// Unfinished
-	private static final void changePassword(User user, String password) {
-		Class.forName("org.apache.derby.jdbc.EmbeddedDriver").newInstance();
-		String username = "",
-			   password = "",
-			   connection = DriverManager.getConnection(
-															"jdbc:derby://localhost:1527/test database",
-															user,
-															password
-														);
-
-		String query =
-				"UPDATE users" +
-				"SET user.password = " + password +
-				"WHERE user.username = " + user.getUsername();
-
-		PreparedStatement stmt = connection.prepareStatement(query);
-		stmt.executeUpdate();
+	public final static boolean handledUserInfoChange(final ArrayList<String> args) {
+		if (!(args.get(0).matches(FNAME) && args.get(1).matches(LNAME)
+			&& args.get(2).matches(PHONE) && args.get(3).matches(EMAIL)
+			&& args.get(4).matches(STREET) && args.get(5).matches(CITY)
+			&& args.get(6).matches(STATE) && args.get(7).matches(ZIP))) {
+			// Invalid fields error
+			return false;
+		}
+		else if ( !Database.findUser( thisUser.getUsername() )) {
+			// User account doesn't exist error
+			return false;
+		}
+		else {
+//			Database.changeUserInfo(args);
+			return true;
+		}
 	}
 
 	// Unfinished
@@ -143,26 +121,36 @@ public class UserController {
 	}
 
 	private static final void createNewUser(final ArrayList<String> args) {
-		User newAccount = new User(args);
-
-		/**
-		 * 	Add the user to the database
-		 */
-		// DatabaseInterface.addUser(newAccount);
-		// checkForAccount(newAccount);
+		thisUser = new User(args);
+		Database.addUser(thisUser);
+		thisUser.setID(Database.getUserID(thisUser.getUsername()));
 	}
 
+	// Put this in database interface
 	public boolean checkForAccount(User u) {
 		// Check database for account
 		return true;
 	}
-	
-	public boolean checkCredentials() {
+
+	// Put this in database interface
+	public boolean checkCredentials(User u) {
 		// Check username and password match
 		return true;
 	}
 
 	public static void main(String[] args) {
-
 	}
+
+	// Input validation patterns
+	private static final String
+	USER = "[a-zA-Z]\\w{12}",
+	PASS = "\\w{7,20}",
+	FNAME = ".+",
+	LNAME = ".+",
+	PHONE = "(\\d{10})",
+	EMAIL = "\\w+@\\w\\.\\w{3}",
+	STREET = "\\d{1,5}\\s\\w.\\s(\\b\\w*\\b\\s){1,2}\\w*\\.",
+	CITY = "\\w+",
+	STATE = "[a-zA-Z][a-zA-Z ]{3,}",
+	ZIP = "\\d{5}(-\\d{4})?";
 }
