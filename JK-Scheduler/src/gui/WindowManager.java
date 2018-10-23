@@ -74,5 +74,10 @@ public class WindowManager {
 		return sceneCon.getCalendar();
 	}
 	
+	public void displayLogin(Stage parentStage) {
+		LoginWindow login = new LoginWindow(parentStage);
+		login.getLoginWindow().show();
+	}
+	
 	
 }

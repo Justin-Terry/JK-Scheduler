@@ -8,7 +8,10 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -104,7 +107,13 @@ public class CreateUserWindow {
 
 				// Pass user submission to UserController for validation
 				if ( UserController.handledAccountCreation(submission) ) {
-					// Green checkmark
+					Alert successfulAlert = new Alert(AlertType.CONFIRMATION, "User successfully submitted",ButtonType.OK);
+					successfulAlert.showAndWait();
+					if(successfulAlert.getResult() == ButtonType.OK) {
+						stage.close();
+					}
+					
+					
 				}
 				else {
 					// Submission error handling

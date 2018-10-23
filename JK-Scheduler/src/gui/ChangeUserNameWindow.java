@@ -1,5 +1,6 @@
 package gui;
 
+import application.Main;
 import application.UserController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -31,7 +32,7 @@ public class ChangeUserNameWindow {
 		
 		Label oldNameLabel = new Label("Current Username");
 		Label newNameLabel = new Label("New Username");
-		Label oldNameField = new Label("GET FROM DB");
+		Label oldNameField = new Label(Main.getCurrentUser().getUsername());
 		TextField newNameField = new TextField();
 		newNameField.setPromptText("Enter new username");
 		Button submitButton = new Button("Submit");
@@ -45,7 +46,7 @@ public class ChangeUserNameWindow {
 			public void handle(final ActionEvent event) {
 				// Pass user submission to UserController for validation
 				if ( UserController.handledUsernameChange( newNameField.getText() ) ) {
-					// Green checkmark
+						// Green checkmark
 				}
 				else {
 					/**

@@ -33,6 +33,7 @@ public class MenuController {
 			public void handle(ActionEvent a) {
 				Main.getWindowManager().showChangeUsername();
 			}
+			
 		});
 		
 		MenuItem changePassword = new MenuItem("Change Password");		

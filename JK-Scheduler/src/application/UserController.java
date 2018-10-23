@@ -11,6 +11,7 @@ public class UserController {
 	public UserController() {
 	}
 
+	
 	public static final boolean handledAccountCreation(final ArrayList<String> args) {
 		if (isValidSubmission(args)) {
 			createNewUser(args);
@@ -106,7 +107,8 @@ public class UserController {
 		/**
 		 * Test
 		 */
-		String[] validPatterns=  new String[10];
+		
+		/*String[] validPatterns=  new String[10];
 		for (int i = 0; i < validPatterns.length; i++)
 			validPatterns[i] = "b";
 
@@ -114,9 +116,12 @@ public class UserController {
 				"arguments and validation patterns\n";
 
 		for (int i = 0; i < validPatterns.length; i++)
-			if ( !args.get(i).matches(validPatterns[i]) )
+			if ( !args.get(i).matches(validPatterns[i]) ) {
+				System.out.println("Is not valid submission");
 				return false;
-
+			}
+			*/
+		System.out.println("Is Valid Submission");
 		return true;
 	}
 
@@ -133,9 +138,12 @@ public class UserController {
 	}
 
 	// Put this in database interface
-	public boolean checkCredentials(User u) {
-		// Check username and password match
-		return true;
+	public boolean checkCredentials(String user, String attempted) {
+		String actual = Main.getDatabase().getUserCredentials(user);
+		if(attempted.compareTo(actual) == 0) {
+			return true;
+		}
+		return false;
 	}
 
 	public static void main(String[] args) {

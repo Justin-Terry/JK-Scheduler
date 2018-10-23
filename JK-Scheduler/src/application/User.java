@@ -26,6 +26,7 @@ public class User {
 		int i = 0;
 		username = args.get(i++);
 		password = args.get(i++);
+		i++;
 		fName = args.get(i++);
 		lName = args.get(i++);
 		phone = args.get(i++);
@@ -34,7 +35,7 @@ public class User {
 								args.get(i++),	// Street
 							  	args.get(i++), 	// City
 							  	args.get(i++),	// State
-							  	args.get(i++)		// Zip
+							  	args.get(i++)   // Zip
 							 );
 
 		/**
