@@ -51,9 +51,6 @@ public class Settings {
 	}
 
 	public void writeSettings() {
-		for(String s : settings) {
-			System.out.println(s);
-		}
 		try {
 			File settingsFile = new File(settingsLocation);
 			FileWriter fw = new FileWriter(settingsFile);

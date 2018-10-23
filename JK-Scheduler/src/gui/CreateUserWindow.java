@@ -111,6 +111,7 @@ public class CreateUserWindow {
 					successfulAlert.showAndWait();
 					if(successfulAlert.getResult() == ButtonType.OK) {
 						stage.close();
+						Main.getDatabase().populateCredentials();
 					}
 					
 					

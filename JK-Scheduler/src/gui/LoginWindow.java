@@ -34,9 +34,10 @@ public class LoginWindow {
 		window.initModality(Modality.APPLICATION_MODAL);
 		GridPane grid = new GridPane();
 		Button loginButton = new Button("Login");
-		grid.setVgap(10);
-		grid.setHgap(10);
-		grid.setPadding(new Insets(10));
+		Button newAccountButton = new Button("Create Account");
+		grid.setVgap(25);
+		grid.setHgap(25);
+		grid.setPadding(new Insets(25));
 		ArrayList<TextField> credentials = new ArrayList();
 		String[] fieldNames = { "Login", "Username", "Password" };
 		Scene scene = new Scene(grid);
@@ -57,10 +58,18 @@ public class LoginWindow {
 		}
 
 		grid.add(loginButton, 0, 3);
+		grid.add(newAccountButton, 1, 3);
 		window.setScene(scene);
+		
+		newAccountButton.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent a) {
+				Main.getWindowManager().showCreateUser();
+			}
+		});
 
 		loginButton.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent a) {
+				Alert badLogin = new Alert(AlertType.ERROR, "Invalid Username or Password", ButtonType.OK);
 				database = Main.getDatabase();
 				String username = credentials.get(0).getText();
 				String password = credentials.get(1).getText();
@@ -71,13 +80,15 @@ public class LoginWindow {
 						User user = Database.getUser(username);
 						if (user != null) {
 							Main.setCurrentUser(user);
-							System.out.println("Current User: " + Main.getCurrentUser().getfName());
+							System.out.println(Main.getCurrentUser().getfName());
 						}
 						window.close();
 					} else {
-						Alert badLogin = new Alert(AlertType.ERROR, "Invalid Username or Password", ButtonType.OK);
 						badLogin.showAndWait();
 					}
+				}else {
+					
+					badLogin.showAndWait();
 				}
 			}
 		});
