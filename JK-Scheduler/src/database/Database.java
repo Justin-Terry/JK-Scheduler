@@ -10,10 +10,46 @@ import java.util.regex.Pattern;
 public final class Database {
 	private static Connection connection = null;
 	private static String dbPath = "jdbc:derby:SchedulerDB;create=true";
-	private HashMap<String, String> creds = new HashMap<String, String>();
+	private HashMap<String, String> creds = new HashMap<String, String>();//<username, password>
 
 	public Database() {
+		createTable();
 		populateCredentials();
+	}
+	
+	private static final void createTable() {
+		try {
+			if(connection == null) {
+				getConnection();
+			}
+			
+			String str = "CREATE TABLE users( "+ 
+					"userID int GENERATED ALWAYS AS IDENTITY (START WITH 1,INCREMENT BY 1)," + 
+					"username VARCHAR(20) NOT NULL," + 
+					"password VARCHAR(20) NOT NULL," + 
+					"fName VARCHAR(20) NOT NULL," + 
+					"lName VARCHAR(20) NOT NULL," + 
+					"phone VARCHAR(10) NOT NULL," + 
+					"email VARCHAR(40) NOT NULL," + 
+					"street VARCHAR (40) NOT NULL," + 
+					"city VARCHAR(20) NOT NULL," + 
+					"state VARCHAR(2) NOT NULL," + 
+					"zipcode VARCHAR(5) NOT NULL," + 
+					"CONSTRAINT userPK PRIMARY KEY(username)," + 
+					"CONSTRAINT userCK UNIQUE(email)," + 
+					"CONSTRAINT userCK2 UNIQUE(phone)" + 
+					")";
+			
+			Statement stmt = connection.createStatement();
+			stmt.execute(str);
+			
+		}catch(SQLException e) {
+			if(e.getSQLState().compareTo("X0Y32") == 0 ) {
+				System.out.println("Table already exists");
+			}else {
+				System.exit(0);
+			}
+		}
 	}
 
 	/**
@@ -188,11 +224,12 @@ public final class Database {
 
 			assert (findUser(user.getUsername()));
 
-			String namechange = "UPDATE Users " + "SET username = " + newName + " " + "WHERE username = "
-					+ user.getUsername();
+			String namechange = "UPDATE users SET username = \'" + newName + "\' WHERE username = \'"
+					+ user.getUsername()+"\'";
 
 			PreparedStatement stmt = connection.prepareStatement(namechange);
 			stmt.executeUpdate();
+			user.setUsername(newName);
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
@@ -213,12 +250,15 @@ public final class Database {
 
 			assert (findUser(user.getUsername()));
 
-			String passchange = "UPDATE Users " + "SET Password = " + newPass + " " + "WHERE Password = "
-					+ user.getPassword(); /** DO NOT DO THIS **/
+			String passchange = "UPDATE users SET password = \'" + newPass + "\' WHERE username = \'"
+					+ user.getUsername() + "\'"; /** DO NOT DO THIS **/
 
+			
 			PreparedStatement stmt = connection.prepareStatement(passchange);
 			stmt.executeUpdate();
+			user.setPassword(newPass);
 		} catch (SQLException e) {
+			
 			System.out.println(e.getMessage());
 		}
 	}

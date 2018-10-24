@@ -106,14 +106,13 @@ public class CreateUserWindow {
 					submission.add(tf.getText());
 
 				// Pass user submission to UserController for validation
-				if ( UserController.handledAccountCreation(submission) ) {
+				if ( UserController.handledAccountCreation(submission)) {
 					Alert successfulAlert = new Alert(AlertType.CONFIRMATION, "User successfully submitted",ButtonType.OK);
 					successfulAlert.showAndWait();
 					if(successfulAlert.getResult() == ButtonType.OK) {
 						stage.close();
 						Main.getDatabase().populateCredentials();
-					}
-					
+					}	
 					
 				}
 				else {

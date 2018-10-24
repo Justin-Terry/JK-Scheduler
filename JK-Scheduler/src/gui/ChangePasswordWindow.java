@@ -1,12 +1,16 @@
 package gui;
 
+import application.Main;
 import application.UserController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -50,18 +54,21 @@ public class ChangePasswordWindow {
 		submitButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(final ActionEvent event) {
-				// Pass user submission to UserController for validation
-				if ( UserController.handledPasswordChange( newPassField.getText() ) ) {
-					// Green checkmark
-				}
-				else {
-					/**
-					 *	To-do: Create error messages in UserController
-					 *		   and pass them in
-					 */
-					String msg = "";
-					Label errorLabel = new Label(msg);
-					vBox.getChildren().add(errorLabel);
+				String newPass = newPassField.getText();
+				
+				if((newPass.compareTo(confirmPassField.getText()) == 0) && (oldPassField.getText().compareTo(Main.getCurrentUser().getPassword()) == 0)) {
+					UserController.handledPasswordChange(newPass);
+					if(newPass.compareTo(Main.getCurrentUser().getPassword()) == 0) {
+						Alert successful = new Alert(AlertType.CONFIRMATION, "Successfully updated password", ButtonType.OK);
+						successful.showAndWait();
+						if(successful.getResult() == ButtonType.OK) {
+							stage.close();
+						}
+	
+					}else {
+						Alert err = new Alert(AlertType.ERROR, "Error changing password", ButtonType.OK);
+						err.showAndWait();
+					}
 				}
 			}
 		});

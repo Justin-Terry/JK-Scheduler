@@ -22,53 +22,28 @@ public class UserController {
 	}
 
 	// Unfinished
-	public final static boolean handledUsernameChange(final String arg) {
-		/**
-		 *	To-do: produce error messages in password window
-		 *		   for each failure case
-		 */
-		if (!arg.matches(USER)) {
-			// Invalid username error
-			return false;
-		}
-		else if ( !Database.findUser(thisUser.getUsername()) ) {
+	public final static boolean handledUsernameChange(String oldName, String newName) {
+
+
+		if ( !Database.findUser(oldName)) {
 			// User account doesn't exist error
 			return false;
 		}
-		else if ( Database.findUser(arg) ) {
+		else if ( Database.findUser(newName) ) {
 			// Username is taken error
 			return false;
 		}
 		else {
-			Database.changeUsername(thisUser, arg);
-			thisUser.setUsername(arg);
+			Database.changeUsername(Main.getCurrentUser(), newName);
+			Main.getCurrentUser().setUsername(newName);
 			return true;
 		}
 	}
 
 	// Unfinished
-	public final static boolean handledPasswordChange(final String arg) {
-		/**
-		 *	To-do: produce error messages in password window
-		 *		   for each failure case
- 		 */
-		if (!arg.matches(PASS)) {
-			// Invalid password error
-			return false;
-		}
-		else if (!Database.findUser( thisUser.getUsername() )) {
-			// User account doesn't exist error
-			return false;
-		}
-		else if ( arg == thisUser.getPassword() ) { /** DO NOT DO THIS **/
-			// Same password error
-			return false;
-		}
-		else {
-			Database.changePassword(thisUser, arg);
-			thisUser.setPassword(arg); /** DON'T DO THIS **/
-			return true;
-		}
+	public final static void handledPasswordChange(String newPass) {
+		User theUser = Main.getCurrentUser();
+		Database.changePassword(theUser, newPass);
 	}
 
 	public final static boolean handledUserInfoChange(final ArrayList<String> args) {
@@ -132,8 +107,8 @@ public class UserController {
 	}
 
 	// Put this in database interface
-	public boolean checkForAccount(User u) {
-		// Check database for account
+	public boolean checkForAccount(String username) {
+		Database.findUser(username);
 		return true;
 	}
 
