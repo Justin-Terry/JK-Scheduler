@@ -6,16 +6,15 @@ import java.sql.Time;
 public class Appointment {
 	private String name;
 	private String type;
-	private String description;
+	private String location;
 	private Date date;
 	private Time startTime;
 	private Time endTime;
 	private User createdBy;
 	
-	public Appointment(String n, String t, String des, Date dat, Time startTim, Time endTim, User creator) {
+	public Appointment(String n, String t, Date dat, Time startTim, Time endTim, User creator, String location) {
 		name = n;
 		type = t;
-		description = des;
 		date = dat;
 		startTime = startTim;
 		endTime = endTim;
@@ -38,13 +37,6 @@ public class Appointment {
 		this.type = type;
 	}
 
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
 
 	public Date getDate() {
 		return date;

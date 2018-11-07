@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -25,7 +27,7 @@ public class CreateAppointmentWindow {
 	private Scene scene;
 	private Button createButton = new Button("Create");
 	private GridPane gp;
-	private String[] labelText = {"Name", "Type", "Description", "Date", "Start Time", "End Time"};
+	private String[] labelText = {"Name", "Type", "Location", "Date", "Start Time", "End Time"};
 	private ObservableList<Integer> hourOptions = FXCollections.observableArrayList(1,2,3,4,5,6,7,8,9,10,11,12);
 	private ObservableList<String> typeOptions = FXCollections.observableArrayList("Private", "Public");
 	private ObservableList<String> minuteOptions;
@@ -37,8 +39,8 @@ public class CreateAppointmentWindow {
 	private final ComboBox endMinuteBox = new ComboBox(minuteOptions);
 	private final ComboBox startAMPMBox = new ComboBox(ampmOptions);
 	private final ComboBox endAMPMBox = new ComboBox(ampmOptions);
-	private static TextArea descriptionText = new TextArea();
 	private static TextField nameText = new TextField();
+	private static TextField locationText = new TextField();
 	
 	
 	CreateAppointmentWindow(){
@@ -77,9 +79,8 @@ public class CreateAppointmentWindow {
 		}
 		
 		gp.add(nameText, 1, 0);
-		gp.add(typeOptionBox, 1, 1);		
-		gp.add(descriptionText, 1, 2);
-		descriptionText.setMaxWidth(300);
+		gp.add(typeOptionBox, 1, 1);
+		gp.add(locationText, 1, 2);
 		gp.add(dp, 1, 3);
 		startHolder.getChildren().addAll(startHourBox, new Label(":"), startMinuteBox, startAMPMBox);
 		endHolder.getChildren().addAll(endHourBox, new Label(":"), endMinuteBox, endAMPMBox);
@@ -89,7 +90,12 @@ public class CreateAppointmentWindow {
 		gp.add(createButton, 0, 6);
 		gp.setColumnSpan(createButton, 2);
 
-		
+		createButton.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent a){
+				//-- Add new user to the DB
+				
+			}
+		});
 		
 		
 		
