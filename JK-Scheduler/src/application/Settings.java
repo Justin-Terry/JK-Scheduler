@@ -12,23 +12,31 @@ import javafx.scene.paint.Color;
 
 public class Settings {
 	private int numOfSettings = 2;
+	File settingsFile;
 	private String[] settings;
 	private String settingsLocation = "src/application/settings.txt";
 
 	public Settings() {
 		settings = new String[numOfSettings];
 		try {
-			File settingsFile = new File(settingsLocation);
-			FileReader fr = new FileReader(settingsFile);
-			BufferedReader settingsReader = new BufferedReader(fr);
+			settingsFile = new File(settingsLocation);
+			if(settingsFile.createNewFile()) {
+				settings[0] = "1";
+				settings[1] = "cc8033";
+			}else {
+			
+				FileReader fr = new FileReader(settingsFile);
+				BufferedReader settingsReader = new BufferedReader(fr);
 
-			for (int i = 0; i < numOfSettings; i++) {
-				settings[i] = settingsReader.readLine();
+				for (int i = 0; i < numOfSettings; i++) {
+					settings[i] = settingsReader.readLine();
+				}
+				fr.close();
 			}
-
+			
 		} catch (IOException e) {
 			System.out.println("Error trying to open settings file.");
-			System.out.println(System.getProperty("user.dir"));
+			
 		}
 
 	}
@@ -52,17 +60,15 @@ public class Settings {
 
 	public void writeSettings() {
 		try {
-			File settingsFile = new File(settingsLocation);
 			FileWriter fw = new FileWriter(settingsFile);
 			BufferedWriter writer = new BufferedWriter(fw);
-			
-			for(int i = 0; i < numOfSettings;i++) {
+
+			for (int i = 0; i < numOfSettings; i++) {
 				writer.write(settings[i]);
 				writer.newLine();
 			}
 			writer.close();
-			
-			
+
 		} catch (IOException e) {
 			System.out.println("Error writing to settings file");
 		}

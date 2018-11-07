@@ -59,6 +59,13 @@ public class MenuController {
 		MenuItem makeAppointment = new MenuItem("Make Appointment");
 		MenuItem cancelAppointment = new MenuItem("Cancel Appointment");
 		MenuItem changeAppointment = new MenuItem("Change Appointment");
+		
+		
+		makeAppointment.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent a) {
+				Main.getWindowManager().showCreateAppointment();
+			}
+		});
 
 		appointmentMenu.getItems().addAll(makeAppointment, cancelAppointment, changeAppointment);
 		return appointmentMenu;

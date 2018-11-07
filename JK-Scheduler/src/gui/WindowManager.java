@@ -79,5 +79,9 @@ public class WindowManager {
 		login.getLoginWindow().show();
 	}
 	
+	public void showCreateAppointment() {
+		CreateAppointmentWindow caw = new CreateAppointmentWindow();
+	}
+	
 	
 }

@@ -7,6 +7,7 @@ public class User {
 			fName, lName, phone,
 			email;
 	private int userid;
+	private ArrayList<Appointment> appointments = new ArrayList<Appointment>();
 	private Address address;
 
 	/**

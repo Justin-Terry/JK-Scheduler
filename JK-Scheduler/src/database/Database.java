@@ -59,7 +59,7 @@ public final class Database {
 		try {
 			// Replace with actual database implementation
 			String host = dbPath;
-			System.out.println(host);
+			System.out.println("Creating connection to database");
 
 			connection = DriverManager.getConnection(host);
 		} catch (SQLException e) {

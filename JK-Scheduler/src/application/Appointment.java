@@ -8,15 +8,17 @@ public class Appointment {
 	private String type;
 	private String description;
 	private Date date;
-	private Time time;
+	private Time startTime;
+	private Time endTime;
 	private User createdBy;
 	
-	public Appointment(String n, String t, String des, Date dat, Time tim, User creator) {
+	public Appointment(String n, String t, String des, Date dat, Time startTim, Time endTim, User creator) {
 		name = n;
 		type = t;
 		description = des;
 		date = dat;
-		time = tim;
+		startTime = startTim;
+		endTime = endTim;
 		createdBy = creator;
 	}
 
@@ -52,12 +54,20 @@ public class Appointment {
 		this.date = date;
 	}
 
-	public Time getTime() {
-		return time;
+	public Time getStartTime() {
+		return startTime;
 	}
 
-	public void setTime(Time time) {
-		this.time = time;
+	public void setStartTime(Time time) {
+		this.startTime = time;
+	}
+	
+	public Time getEndTime() {
+		return endTime;
+	}
+	
+	public void setEndTime(Time time) {
+		this.endTime = time;
 	}
 
 	public User getCreatedBy() {
