@@ -66,6 +66,12 @@ public class MenuController {
 				Main.getWindowManager().showCreateAppointment();
 			}
 		});
+		
+		changeAppointment.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent a) {
+				Main.getWindowManager().showModifyAppointment();
+			}
+		});
 
 		appointmentMenu.getItems().addAll(makeAppointment, cancelAppointment, changeAppointment);
 		return appointmentMenu;

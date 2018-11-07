@@ -83,5 +83,9 @@ public class WindowManager {
 		CreateAppointmentWindow caw = new CreateAppointmentWindow();
 	}
 	
+	public void showModifyAppointment() {
+		ModifyAppointmentWindow maw = new ModifyAppointmentWindow();
+	}
+	
 	
 }
