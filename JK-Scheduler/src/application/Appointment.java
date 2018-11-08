@@ -21,6 +21,16 @@ public class Appointment {
 		createdBy = creator;
 	}
 
+	public Appointment(AppointmentSubmissionForm form, User creator) {
+		this.name = form.getName();
+		this.type = form.getType();
+		this.location = form.getLocation();
+		this.date = form.getDate();
+		this.startTime = form.getStartTime();
+		this.endTime = form.getEndTime();
+		this.createdBy = creator;
+	}
+
 	public String getName() {
 		return name;
 	}

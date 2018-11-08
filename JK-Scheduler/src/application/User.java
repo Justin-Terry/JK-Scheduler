@@ -48,6 +48,10 @@ public class User {
 //		}
 	}
 
+	public void addAppointment(Appointment appointment) {
+		if (appointment != null) appointments.add(appointment);
+	}
+
 	public String getUsername() {
 		return username;
 	}
