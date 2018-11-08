@@ -1,5 +1,7 @@
 package application;
 	
+import java.util.Calendar;
+
 import database.Database;
 import gui.SettingsWindow;
 import gui.WindowManager;
@@ -10,7 +12,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 	private static Settings settings = new Settings();
 	private static WindowManager winMan;
-	private static User currentUser;
+	private static User currentUser = null;
 	private static Database schedulerDB;
 	private static UserController userCon;
 	
@@ -24,7 +26,7 @@ public class Main extends Application {
 	
 	public static void main(String[] args) {
 		userCon = new UserController();
-		schedulerDB = new Database();		
+		schedulerDB = new Database();
 		launch(args);
 	}
 	
