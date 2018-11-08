@@ -3,7 +3,9 @@ package application;
 import database.Database;
 
 import java.lang.reflect.Array;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.sql.Date;
 
 public class UserController {
 	private static User thisUser;
@@ -60,6 +62,21 @@ public class UserController {
 		}
 		else {
 //			Database.changeUserInfo(args);
+			return true;
+		}
+	}
+
+	public static final boolean handledAppointmentSubmission(AppointmentSubmissionForm form) {
+		// e.g. '1999-07-28 06:25:00'
+		Date d = form.getDate();
+		String startFormat = String.format("'%d-%d-%d %s'", d.getYear()-1900, d.getMonth()+1, d.getDate(), form.getStartTime()),
+				endFormat = String.format("'%d-%d-%d %s'", d.getYear()-1900, d.getMonth()+1, d.getDate(), form.getEndTime());
+
+		// Time conflict with an existing appointment
+		if (Database.findAppointment(thisUser.getID(), startFormat, endFormat))
+			return false;
+		else {
+			thisUser.addAppointment(new Appointment(form, thisUser));
 			return true;
 		}
 	}
@@ -122,6 +139,7 @@ public class UserController {
 	}
 
 	public static void main(String[] args) {
+		System.out.println(String.format("'%s %s'", new Date(2018-1900, 7, 28), new Time(6,25,0)));
 	}
 
 	// Input validation patterns
