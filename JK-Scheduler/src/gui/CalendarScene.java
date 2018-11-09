@@ -1,6 +1,9 @@
 package gui;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 import application.Main;
 import javafx.geometry.HPos;
@@ -20,13 +23,18 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class CalendarScene {
+	private Calendar appCalendar = Calendar.getInstance();
+	public static ArrayList<Date> weekDays;
+	public static ArrayList<Integer> weekDates;
+	private String monthName;
 	private GridPane calendarGrid;
 	private GridPane dayLabels;
 	private BorderPane borderPane;
 	private int calendarLayout = 0; // 0 = day, 1 = week, 2 = month
 	private Insets cellMargin = new Insets(1);
 	private Insets gridPadding = new Insets(10);
-	private String[] dayNames = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+	private String[] dayNames = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+	private String[] monthNames = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 	private String[] hourStrings = { "12:00am", "1:00am", "2:00am", "3:00am", "4:00am", "5:00am", "6:00am", "7:00am",
 			"8:00am", "9:00am", "10:00am", "11:00am", "12:00pm", "1:00pm", "2:00pm", "3:00pm", "4:00pm", "5:00pm",
 			"6:00pm", "7:00pm", "8:00pm", "9:00pm", "10:00pm", "11:00pm" };
@@ -118,6 +126,9 @@ public class CalendarScene {
 	}
 
 	private void createWeekScene() {
+		getCurrentWeek();
+		Label monthLabel = new Label();
+		monthLabel.setStyle("-fx-font: 64 arial;");
 		boxes = new ArrayList<CalendarBox>();
 		int numRows = 2;
 		int numCols = 7;
@@ -154,10 +165,10 @@ public class CalendarScene {
 			calendarGrid.setFillWidth(dayLabel, true);
 		}
 
-		for (int i = 1; i < numRows; i++) {
+		for (int i = 1; i < numRows+1; i++) {
 			for (int j = 0; j < 7; j++) {
 				if (d < numCols) {
-					CalendarBox temp = new CalendarBox(d, calendarColor);
+					CalendarBox temp = new CalendarBox(weekDates.get(j), calendarColor);
 					boxes.add(temp);
 					Pane tempRec = temp.getCalendarBox();
 					calendarGrid.add(tempRec, j, i);
@@ -209,6 +220,30 @@ public class CalendarScene {
 		calendarColor = c;
 		for (CalendarBox i : boxes) {
 			i.setDateBoxColor(c);
+		}
+	}
+	
+	public String getMonthName(Date d) {
+		appCalendar = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
+		appCalendar.setTime(d);
+		return monthNames[appCalendar.get(Calendar.MONTH)];
+		
+	}
+	
+	public void getCurrentWeek() {
+		weekDays = new ArrayList<Date>();
+		weekDates = new ArrayList<Integer>();
+		Date date = new Date();
+		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
+		calendar.setTime(date);
+		
+		int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+		calendar.add(Calendar.DATE, -dayOfWeek);
+		
+		for(int i = 0; i < 7; i++) {
+			calendar.add(Calendar.DATE, 1);
+			weekDays.add(calendar.getTime());
+			weekDates.add(calendar.get(Calendar.DATE));
 		}
 	}
 
