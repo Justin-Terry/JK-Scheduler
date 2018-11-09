@@ -17,12 +17,12 @@ public class Appointment {
 	private User createdBy;
 	
 	public Appointment(String name, String type, String location, LocalDateTime start, LocalDateTime end, int userid) {
-		this.name = name;
-		this.type = type;
-                this.location = location;
-		this.start_time = start;
-		this.end_time = end;
-                this.created_by = userid;
+            this.name = name;
+            this.type = type;
+            this.location = location;
+            this.start_time = start;
+            this.end_time = end;
+            this.created_by = userid;
 	}
 
 	public Appointment(AppointmentSubmissionForm form, int userid) {
@@ -103,7 +103,14 @@ public class Appointment {
 	}
 
 	public static final LocalDateTime parse(String str) {
-		return LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.0"));
+            if (str.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"))
+                return LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+            else if (str.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d*")) 
+                return LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.0"));
+            else {
+                System.out.println("Neither");
+                return null;
+            }
 	}
 
         @Override
@@ -115,14 +122,5 @@ public class Appointment {
         }
 	
 	public static void main(String[] args) {
-		LocalDateTime now = LocalDateTime.now();
-
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-		String formatDateTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
-		System.out.println("After : " + formatDateTime);
-		return;
-	}
-	
+	}	
 }

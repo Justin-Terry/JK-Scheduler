@@ -12,31 +12,14 @@ import java.util.Set;
 
 public final class Database {
     private static Connection connection = null;
-//	private static String dbPath = "jdbc:derby:SchedulerDB;create=true";
-    private static String dbPath = "jdbc:derby://localhost:1527/JKS Test DB;create=true";
+//    private static String dbPath = "jdbc:derby:SchedulerDB;create=true";
+    private static String dbPath = "jdbc:derby://localhost:1527/JKS Test DB";
     private HashMap<String, String> creds = new HashMap<String, String>();//<username, password>
 
     public Database() {
-//        if (!tableExists("Users")) createUsersTable();
-//        else System.out.println("Error - 'Users' table already exists");
-//        if (!tableExists("Appointments")) createAppointmentsTable();
-//        else System.out.println("Error - 'Appointments' table already exists");
-        
-//        populateCredentials();
-    }
-
-    private final boolean tableExists(String table) {
-        try {
-            if(connection == null) getConnection();
-            
-            DatabaseMetaData dbmd = connection.getMetaData();
-            ResultSet rs = dbmd.getTables(null, "APP", table, null);
-            System.out.println("Hello");
-            return rs.next();
-        } catch(SQLException e) {
-            System.out.println(e.getMessage());
-            return true;
-        }
+//        createUsersTable();
+//        createAppointmentsTable();
+        populateCredentials();
     }
     
     private static final void createUsersTable() {
@@ -370,7 +353,7 @@ public final class Database {
                 return count >= 1;
             } 
             catch (SQLException e) {
-                System.out.println(e.getMessage());
+                System.out.println("findAppointment() - " + e.getMessage());
                 return true;
             }
 	}
@@ -397,12 +380,12 @@ public final class Database {
             stmt.setString(1, appointment.getName());
             stmt.setString(2, appointment.getType());
             stmt.setString(3, appointment.getLocation());
-            stmt.setString(4, Appointment.format(appointment.getStart()));
-            stmt.setString(5, Appointment.format(appointment.getEnd()));
+            stmt.setString(4, Appointment.format(appointment.getStart())+":00");
+            stmt.setString(5, Appointment.format(appointment.getEnd())+":00");
             stmt.setString(6, Integer.toString(appointment.getCreator()));
             stmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("addAppointment() - " + e.getMessage());
         }
     }
 	
@@ -435,7 +418,7 @@ public final class Database {
             stmt.executeUpdate();
         }
         catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("changeAppointment() - " + e.getMessage());
         }
     }
 
@@ -450,7 +433,7 @@ public final class Database {
             stmt.executeUpdate();
         } 
         catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("cancelAppointment() - " + e.getMessage());
         }
     }
 
@@ -492,7 +475,8 @@ public final class Database {
             }
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            
+            System.out.println("retrieveAppointments() - " + e.getMessage());
         }
         return appointments;
     }
@@ -518,14 +502,15 @@ public final class Database {
 
     public static void main(String[] args) {
         Database d = new Database();
-//        Appointment a = new Appointment(
-//                            "New event", 
-//                            "someType", 
-//                            "nowsdfdsfse", 
-//                            Appointment.parse("2018-11-10 11:11:11"), 
-//                            Appointment.parse("2018-11-11 11:11:11"),
-//                            1
-//                        );
+        Appointment a = new Appointment(
+                            "#@$@t", 
+                            "someType", 
+                            "DFGDF", 
+                            Appointment.parse("2018-11-10 11:11"), 
+                            Appointment.parse("2018-11-11 11:11"),
+                            1
+                        );
+        addAppointment(a);
 //        
 //        Appointment b = new Appointment(
 //                            "Lunch", 
@@ -550,6 +535,7 @@ public final class Database {
         for (Appointment appt : retrieveAppointments(1)) {
             System.out.println(appt);
         }
+
         System.out.println("Done");
     }
 }
