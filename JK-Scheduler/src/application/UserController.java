@@ -12,7 +12,6 @@ public class UserController {
 
 	public UserController() {
 	}
-
 	
 	public static final boolean handledAccountCreation(final ArrayList<String> args) {
 		if (isValidSubmission(args)) {
@@ -68,15 +67,13 @@ public class UserController {
 
 	public static final boolean handledAppointmentSubmission(AppointmentSubmissionForm form) {
 		// e.g. '1999-07-28 06:25:00'
-		Date d = form.getDate();
-		String startFormat = String.format("'%d-%d-%d %s'", d.getYear()-1900, d.getMonth()+1, d.getDate(), form.getStartTime()),
-				endFormat = String.format("'%d-%d-%d %s'", d.getYear()-1900, d.getMonth()+1, d.getDate(), form.getEndTime());
 
 		// Time conflict with an existing appointment
-		if (Database.findAppointment(thisUser.getID(), startFormat, endFormat))
+		if (Database.findAppointment(thisUser.getID(), form.getStartTime(), form.getEndTime()))
 			return false;
 		else {
-			thisUser.addAppointment(new Appointment(form, thisUser));
+			Appointment appt = new Appointment(form, thisUser);
+			thisUser.addAppointment(appt);
 			return true;
 		}
 	}
