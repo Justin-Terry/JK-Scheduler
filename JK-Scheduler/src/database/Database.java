@@ -347,7 +347,7 @@ public final class Database {
                 if ( result.next() ) count = result.getInt("rowcount");
                 
                 if (count > 1)
-                   System.out.println("Error - database contains more than 1 appointment in this timeslot");
+                   System.out.println("findAppoint() - database contains more than 1 appointment in this timeslot");
                 
                 result.close();
                 return count >= 1;
@@ -380,8 +380,8 @@ public final class Database {
             stmt.setString(1, appointment.getName());
             stmt.setString(2, appointment.getType());
             stmt.setString(3, appointment.getLocation());
-            stmt.setString(4, Appointment.format(appointment.getStart())+":00");
-            stmt.setString(5, Appointment.format(appointment.getEnd())+":00");
+            stmt.setString(4, Appointment.format(appointment.getStart()));
+            stmt.setString(5, Appointment.format(appointment.getEnd()));
             stmt.setString(6, Integer.toString(appointment.getCreator()));
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -428,7 +428,7 @@ public final class Database {
             
             PreparedStatement stmt = connection.prepareStatement(
                     "DELETE FROM Appointments " +
-                    "WHERE app_id = " + appointmentID + "");
+                    "WHERE app_id = " + appointmentID);
 
             stmt.executeUpdate();
         } 
@@ -501,37 +501,7 @@ public final class Database {
 	}
 
     public static void main(String[] args) {
-        Database d = new Database();
-        Appointment a = new Appointment(
-                            "#@$@t", 
-                            "someType", 
-                            "DFGDF", 
-                            Appointment.parse("2018-11-10 11:11"), 
-                            Appointment.parse("2018-11-11 11:11"),
-                            1
-                        );
-        addAppointment(a);
-//        
-//        Appointment b = new Appointment(
-//                            "Lunch", 
-//                            "private", 
-//                            "anywhere", 
-//                            Appointment.parse("2018-11-09 11:45:00"), 
-//                            Appointment.parse("2018-11-09 12:45:00"),
-//                            1
-//                        );
-//        b.setAppID(2);
-//        
-//        changeAppointment(3, a);
         
-
-
-//            addAppointment(a);
-//            cancelAppointment(8);
-//        System.out.println(findAppointment(1, Appointment.parse("2018-11-09 07:45:00"), Appointment.parse("2018-11-09 16:45:00")));
-//        System.out.println(findAppointment(1, Appointment.parse("2018-11-09 10:45:00"), Appointment.parse("2018-11-09 11:45:00")));
-//        System.out.println(Appointment.format(Appointment.parse("2018-11-09 10:45:00")));
-//        changeAppointment();
         for (Appointment appt : retrieveAppointments(1)) {
             System.out.println(appt);
         }
