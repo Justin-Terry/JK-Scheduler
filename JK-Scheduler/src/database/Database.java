@@ -12,8 +12,7 @@ import java.util.Set;
 
 public final class Database {
     private static Connection connection = null;
-//    private static String dbPath = "jdbc:derby:SchedulerDB;create=true";
-    private static String dbPath = "jdbc:derby://localhost:1527/JKS Test DB";
+    private static String dbPath = "jdbc:derby:SchedulerDB;create=true";
     private HashMap<String, String> creds = new HashMap<String, String>();//<username, password>
 
     public Database() {
@@ -101,7 +100,7 @@ public final class Database {
 			String host = dbPath;
 			System.out.println("Creating connection to database");
 
-			connection = DriverManager.getConnection(host,"app","app");
+			connection = DriverManager.getConnection(host);
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
@@ -501,11 +500,6 @@ public final class Database {
 	}
 
     public static void main(String[] args) {
-        
-        for (Appointment appt : retrieveAppointments(1)) {
-            System.out.println(appt);
-        }
-
         System.out.println("Done");
     }
 }
