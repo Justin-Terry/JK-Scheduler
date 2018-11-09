@@ -99,16 +99,26 @@ public class Appointment {
         }
 
 	public static final String format(LocalDateTime l) {
-		return l.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+		return l.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))+":00.0";
 	}
 
+        /**
+         * Parse string to convert to LocalDateTime object
+         * @param str - the DateTime string
+         *  patterns: 
+         *          yyyy-MM-dd HH:mm 
+         *          yyyy-MM-dd HH:mm:ss
+         *          yyyy-MM-dd HH:mm:ss.f   <---- Timestamp format in the database
+         * @return - the DateTime as an object
+         */
 	public static final LocalDateTime parse(String str) {
             if (str.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"))
                 return LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+            else if (str.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")) 
+                return LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             else if (str.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d*")) 
                 return LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.0"));
             else {
-                System.out.println("Neither");
                 return null;
             }
 	}
