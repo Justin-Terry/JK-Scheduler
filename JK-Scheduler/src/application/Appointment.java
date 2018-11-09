@@ -10,26 +10,28 @@ public class Appointment {
 	private String name;
 	private String type;
 	private String location;
-	private LocalDateTime start;
-	private LocalDateTime end;
-	private int id;
+	private LocalDateTime start_time;
+	private LocalDateTime end_time;
+        private int app_id;
+	private int created_by;
 	private User createdBy;
 	
-	public Appointment(String n, String t, LocalDateTime start, LocalDateTime end, User creator, String location) {
-		name = n;
-		type = t;
-		this.start = start;
-		this.end = end;
-		createdBy = creator;
+	public Appointment(String name, String type, String location, LocalDateTime start, LocalDateTime end, int userid) {
+		this.name = name;
+		this.type = type;
+                this.location = location;
+		this.start_time = start;
+		this.end_time = end;
+                this.created_by = userid;
 	}
 
-	public Appointment(AppointmentSubmissionForm form, User creator) {
+	public Appointment(AppointmentSubmissionForm form, int userid) {
 		this.name = form.getName();
 		this.type = form.getType();
 		this.location = form.getLocation();
-		this.start = form.getStartTime();
-		this.end = form.getEndTime();
-		this.createdBy = creator;
+		this.start_time = form.getStartTime();
+		this.end_time = form.getEndTime();
+		this.created_by = userid;
 	}
 
 	public String getName() {
@@ -57,19 +59,27 @@ public class Appointment {
 	}
 
 	public LocalDateTime getStart() {
-		return start;
+		return start_time;
 	}
 
 	public void setStart(final LocalDateTime start) {
-		this.start = start;
+		this.start_time = start;
 	}
 
 	public LocalDateTime getEnd() {
-		return end;
+		return end_time;
 	}
 
 	public void setEnd(final LocalDateTime end) {
-		this.end = end;
+		this.end_time = end;
+	}
+
+	public int getCreator() {
+		return created_by;
+	}
+
+	public void setCreator(final int id) {
+		this.created_by = id;
 	}
 
 	public User getCreatedBy() {
@@ -79,20 +89,33 @@ public class Appointment {
 	public void setCreatedBy(final User createdBy) {
 		this.createdBy = createdBy;
 	}
+        
+        public final void setAppID(final int id) {
+           this.app_id = id;
+        }
+        
+        public final int getAppID() {
+            return this.app_id;
+        }
 
 	public static final String format(LocalDateTime l) {
-		return l.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		return l.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 	}
 
+	public static final LocalDateTime parse(String str) {
+		return LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.0"));
+	}
 
-	/* Leaving out setCreatedBy as the users
-	 * shouldn't be able to modify that.
-	 */
+        @Override
+        public final String toString() {
+            return String.format(
+                    "Event title: %s  |  Type: %s  |  Location: %s  |  Start: %s  |  End: %s",
+                    getName(), getType(), getLocation(), format(getStart()), format(getEnd())
+                    );
+        }
 	
 	public static void main(String[] args) {
 		LocalDateTime now = LocalDateTime.now();
-
-//		System.out.println("Before : " + now);
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
