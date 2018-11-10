@@ -2,6 +2,8 @@ package application;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 abstract class SubmissionForm{}
 
@@ -9,16 +11,14 @@ class AppointmentSubmissionForm extends SubmissionForm {
     private final String name;
     private final String type;
     private final String location;
-    private final Date date;
-    private final Time startTime;
-    private final Time endTime;
+    private final LocalDateTime startTime;
+    private final LocalDateTime endTime;
 //    private User createdBy;
 
-    public AppointmentSubmissionForm(String name, String type, String location, Date date, Time start, Time end) {
+    public AppointmentSubmissionForm(String name, String type, String location, LocalDateTime start, LocalDateTime end) {
         this.name = name;
         this.type = type;
         this.location = location;
-        this.date = date;
         this.startTime = start;
         this.endTime = end;
     }
@@ -35,15 +35,11 @@ class AppointmentSubmissionForm extends SubmissionForm {
         return location;
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public Time getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public Time getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 }

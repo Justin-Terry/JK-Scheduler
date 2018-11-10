@@ -4,11 +4,13 @@ import java.util.ArrayList;
 
 public class User {
 	private String username, password,
-			fName, lName, phone,
-			email;
+					fName, lName, phone,
+					email;
 	private int userid;
 	private ArrayList<Appointment> appointments = new ArrayList<Appointment>();
 	private Address address;
+
+	public User(final int userid) { this.userid = userid; }
 
 	/**
 	 *  Pass an array of information fields from UserController 'createAccount' method
@@ -50,6 +52,27 @@ public class User {
 
 	public void addAppointment(Appointment appointment) {
 		if (appointment != null) appointments.add(appointment);
+	}
+
+	public void cancelAppointment(int appointmentID) {
+		for (Appointment a : appointments) {
+			if (appointmentID == a.getCreator()) {
+				appointments.remove(a);
+				return;
+			}
+		}
+	}
+        
+        public int countAppointments() {
+            return this.appointments.size();
+        }
+        
+        public ArrayList<Appointment> getAppointments() {
+            return this.appointments;
+        }
+        
+	public void populateAppointments(ArrayList<Appointment> list) {
+		this.appointments = list;
 	}
 
 	public String getUsername() {

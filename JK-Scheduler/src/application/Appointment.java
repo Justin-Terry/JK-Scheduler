@@ -126,11 +126,21 @@ public class Appointment {
         @Override
         public final String toString() {
             return String.format(
-                    "Event title: %s  |  Type: %s  |  Location: %s  |  Start: %s  |  End: %s",
+                    "Event title=%s  |  Type=%s  |  Location=%s  |  Start=%s  |  End=%s",
                     getName(), getType(), getLocation(), format(getStart()), format(getEnd())
                     );
         }
 	
 	public static void main(String[] args) {
+        Appointment app = new Appointment(
+                String.valueOf((char)6),
+                "idk",
+                "anywhere",
+                Appointment.parse("2018-11-09 04:44"),
+                Appointment.parse("2018-11-09 04:44"),
+                6
+        );
+
+        System.out.println(app);
 	}	
 }
