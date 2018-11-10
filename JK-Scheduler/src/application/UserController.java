@@ -2,6 +2,10 @@ package application;
 
 import database.Database;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.sql.Time;
 import java.util.ArrayList;
@@ -10,7 +14,38 @@ import java.sql.Date;
 public class UserController {
 	private static User thisUser;
 
-	public UserController() {
+	public UserController() {}
+
+	/**
+	 * Creates a 'Schedules' folder in the working directory
+	 * and outputs the user's schedule in it.
+	 * @param filename - The name of the output file
+	 */
+	public void exportSchedule(String filename) {
+		try{
+			String dirName = "./Schedules/";
+			File dir = new File(dirName);
+			if (!dir.exists())
+				dir.mkdir();
+
+			String fn = filename;
+			File sched = new File(dirName + fn);
+			sched.createNewFile();
+
+			FileWriter fw = new FileWriter(sched);
+			BufferedWriter writer = new BufferedWriter(fw);
+
+			writer.write("UID=" + thisUser.getID() + "\n");
+			for (Appointment a : thisUser.getAppointments()) {
+				writer.write(a.toString() + "\n");
+			}
+			writer.close();
+		}
+		catch (IOException e){
+			System.out.print("exportSchedule() - ");
+			e.printStackTrace();
+		}
+
 	}
 	
 	public static final boolean handledAccountCreation(final ArrayList<String> args) {
@@ -65,18 +100,65 @@ public class UserController {
 		}
 	}
 
+	// Untested
+	// Possibly unfinished
 	public static final boolean handledAppointmentSubmission(AppointmentSubmissionForm form) {
-		// e.g. '1999-07-28 06:25:00'
-
 		// Time conflict with an existing appointment
-		if (Database.findAppointment(thisUser.getID(), form.getStartTime(), form.getEndTime()))
-			return false;
+		if (Database.findAppointment(thisUser.getID(), form.getStartTime(), form.getEndTime())) {
+                    System.out.println("handledAppointmentSubmission() - time conflict with existing appt.");    
+                    return false;
+                }
 		else {
-			Appointment appt = new Appointment(form, thisUser);
+			Appointment appt = new Appointment(form, thisUser.getID());
 			thisUser.addAppointment(appt);
 			return true;
 		}
 	}
+
+
+	public static final boolean handledAppointmentCancel(int appointmentID) {
+		// User doesn't any appointments
+		if (thisUser.countAppointments() == 0) {
+                    System.out.println("handledAppointmentCancel() - user has no appts.");
+                    return false;
+                }
+                
+                for (Appointment a : thisUser.getAppointments()) {
+                    if (a.getAppID() == appointmentID) {
+			thisUser.cancelAppointment(appointmentID);
+			Database.cancelAppointment(appointmentID);
+			return true;
+                    }
+		}
+                System.out.println("handledAppointmentCancel() - cannot find appt. for this user");
+                return false;
+	}
+
+	public static final boolean handledAppointmentChange(Appointment changeThis) {
+                if (thisUser.countAppointments() == 0) {
+                    System.out.println("handledAppointmentChange() - user has no appts.");
+                    return false;
+                }
+                for (Appointment a : thisUser.getAppointments()) {
+                    int id = changeThis.getAppID();
+                    if (a.getAppID() == id) {
+			thisUser.cancelAppointment(id);
+			Database.cancelAppointment(id);
+                        thisUser.addAppointment(changeThis);
+                        Database.addAppointment(changeThis);
+			return true;
+                    }
+		}
+		return false;
+	}
+
+//	public User getUser() {
+//		return thisUser;
+//	}
+//
+//	public void setUser(User user) {
+//		thisUser = user;
+//	}
 
 	// Unfinished
 	private static final boolean isValidSubmission(final ArrayList<String> args) {
@@ -136,7 +218,26 @@ public class UserController {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(String.format("'%s %s'", new Date(2018-1900, 7, 28), new Time(6,25,0)));
+//		UserController uc = new UserController();
+//
+//		final int USERID = 7;
+//		User me = new User(USERID);
+//
+//		for (int i = 0; i < 15; i++) {
+//			Appointment app = new Appointment(
+//					String.valueOf(i),
+//					"idk",
+//					"anywhere",
+//					Appointment.parse("2018-11-09 04:44"),
+//					Appointment.parse("2018-11-09 04:44"),
+//					USERID
+//			);
+//			me.addAppointment(app);
+//		}
+//		uc.setUser(me);
+//
+//
+//		uc.exportSchedule("schedule");
 	}
 
 	// Input validation patterns
