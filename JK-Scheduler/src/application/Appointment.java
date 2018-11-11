@@ -1,10 +1,6 @@
 package application;
 
-import java.sql.Date;
-import java.sql.Time;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class Appointment {
 	private String name;
@@ -12,7 +8,7 @@ public class Appointment {
 	private String location;
 	private LocalDateTime start_time;
 	private LocalDateTime end_time;
-        private int app_id;
+    private int app_id;
 	private int created_by;
 	private User createdBy;
 	
@@ -25,13 +21,21 @@ public class Appointment {
             this.created_by = userid;
 	}
 
-	public Appointment(AppointmentSubmissionForm form, int userid) {
+	public Appointment(AppointmentForm form, int userid) {
 		this.name = form.getName();
 		this.type = form.getType();
 		this.location = form.getLocation();
 		this.start_time = form.getStartTime();
 		this.end_time = form.getEndTime();
 		this.created_by = userid;
+	}
+
+	public void modify(AppointmentForm form) {
+		this.name = form.getName();
+		this.type = form.getType();
+		this.location = form.getLocation();
+		this.start_time = form.getStartTime();
+		this.end_time = form.getEndTime();
 	}
 
 	public String getName() {
@@ -90,54 +94,28 @@ public class Appointment {
 		this.createdBy = createdBy;
 	}
         
-        public final void setAppID(final int id) {
-           this.app_id = id;
-        }
-        
-        public final int getAppID() {
-            return this.app_id;
-        }
-
-	public static final String format(LocalDateTime l) {
-		return l.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))+":00.0";
+	public final void setAppID(final int id) {
+	   this.app_id = id;
 	}
 
-        /**
-         * Parse string to convert to LocalDateTime object
-         * @param str - the DateTime string
-         *  patterns: 
-         *          yyyy-MM-dd HH:mm 
-         *          yyyy-MM-dd HH:mm:ss
-         *          yyyy-MM-dd HH:mm:ss.f   <---- Timestamp format in the database
-         * @return - the DateTime as an object
-         */
-	public static final LocalDateTime parse(String str) {
-            if (str.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"))
-                return LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-            else if (str.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")) 
-                return LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            else if (str.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d*")) 
-                return LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.0"));
-            else {
-                return null;
-            }
-	}
-
-        @Override
-        public final String toString() {
-            return String.format(
-                    "Event title=%s  |  Type=%s  |  Location=%s  |  Start=%s  |  End=%s",
-                    getName(), getType(), getLocation(), format(getStart()), format(getEnd())
-                    );
+	public final int getAppID() {
+		return this.app_id;
         }
+
+	@Override
+	public final String toString() {
+		return String.format(
+				"Event title=%s  |  Type=%s  |  Location=%s  |  Start=%s  |  End=%s",
+				getName(), getType(), getLocation(), convert.toTimestampFormat(getStart()), convert.toTimestampFormat(getEnd()));
+	}
 	
 	public static void main(String[] args) {
         Appointment app = new Appointment(
                 String.valueOf((char)6),
                 "idk",
                 "anywhere",
-                Appointment.parse("2018-11-09 04:44"),
-                Appointment.parse("2018-11-09 04:44"),
+                convert.toLocalDateTime("2018-11-09 04:44:00.0"),
+				convert.toLocalDateTime("2018-11-09 04:44:00.0"),
                 6
         );
 
