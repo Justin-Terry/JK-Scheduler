@@ -62,13 +62,17 @@ public class User {
 			}
 		}
 	}
+
+//	public void changeAppointment(AppointmentForm form) {
+//		this.
+//	}
         
-        public int countAppointments() {
-            return this.appointments.size();
-        }
-        
-        public ArrayList<Appointment> getAppointments() {
-            return this.appointments;
+	public int countAppointments() {
+return this.appointments.size();
+	}
+
+	public ArrayList<Appointment> getAppointments() {
+		return this.appointments;
         }
         
 	public void populateAppointments(ArrayList<Appointment> list) {

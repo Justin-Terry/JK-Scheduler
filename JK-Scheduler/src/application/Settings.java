@@ -14,7 +14,7 @@ public class Settings {
 	private int numOfSettings = 2;
 	File settingsFile;
 	private String[] settings;
-	private String settingsLocation = "src/application/settings.txt";
+	private String settingsLocation = "./settings.txt";
 
 	public Settings() {
 		settings = new String[numOfSettings];

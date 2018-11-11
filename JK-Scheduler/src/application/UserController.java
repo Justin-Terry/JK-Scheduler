@@ -2,14 +2,9 @@ package application;
 
 import database.Database;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.sql.Time;
+import java.io.*;
 import java.util.ArrayList;
-import java.sql.Date;
+import java.util.Scanner;
 
 public class UserController {
 	private static User thisUser;
@@ -23,8 +18,14 @@ public class UserController {
 	 */
 	public void exportSchedule(String filename) {
 		try{
+			if (thisUser.getAppointments().size() == 0) {
+				System.out.println("exportScheduler() - user has no appointments");
+				return;
+			}
+
 			String dirName = "./Schedules/";
 			File dir = new File(dirName);
+
 			if (!dir.exists())
 				dir.mkdir();
 
@@ -36,16 +37,64 @@ public class UserController {
 			BufferedWriter writer = new BufferedWriter(fw);
 
 			writer.write("UID=" + thisUser.getID() + "\n");
+
 			for (Appointment a : thisUser.getAppointments()) {
 				writer.write(a.toString() + "\n");
 			}
+
 			writer.close();
 		}
 		catch (IOException e){
 			System.out.print("exportSchedule() - ");
 			e.printStackTrace();
 		}
+	}
 
+	public void importSchedule(String filename) {
+		try{
+			String dirName = "./Schedules/";
+			File dir = new File(dirName);
+
+			if (!dir.exists()) {
+				System.out.println("importSchedule() - ./Schedules/ not found");
+				return;
+			}
+
+			String fn = filename;
+			File sched = new File(dirName + fn);
+			Scanner reader = new Scanner(sched);
+
+			if (reader.hasNextLine()) {
+				int created_by = Integer.parseInt(reader.nextLine());
+
+				while (reader.hasNextLine()) {
+					String[] args = reader.nextLine().split(" | ");
+
+					if (args.length != 5) {
+						System.out.println("importSchedule() - problem reading file " + filename);
+						return;
+					}
+
+					Appointment addThis = new Appointment(args[0], args[1], args[2], convert.toLocalDateTime(args[3]), convert.toLocalDateTime(args[4]), created_by);
+
+					if ( Database.findAppointment(thisUser.getID(), addThis.getStart(), addThis.getEnd()) ) {
+						System.out.println("importSchedule() - appointment time conflict");
+					}
+					else {
+						thisUser.addAppointment(addThis);
+						Database.addAppointment(addThis);
+					}
+				}
+			}
+		}
+		catch (IllegalArgumentException e) {
+			System.out.println("exportSchedule() - probably a problem with the Appointment ctor");
+			System.out.println(e.getMessage());
+		}
+		catch (IOException e){
+			System.out.print("exportSchedule() - ");
+			e.printStackTrace();
+		}
 	}
 	
 	public static final boolean handledAccountCreation(final ArrayList<String> args) {
@@ -57,9 +106,7 @@ public class UserController {
 			return false;
 	}
 
-	// Unfinished
 	public final static boolean handledUsernameChange(String oldName, String newName) {
-
 
 		if ( !Database.findUser(oldName)) {
 			// User account doesn't exist error
@@ -101,64 +148,68 @@ public class UserController {
 	}
 
 	// Untested
-	// Possibly unfinished
-	public static final boolean handledAppointmentSubmission(AppointmentSubmissionForm form) {
+	public static final boolean handledAppointmentSubmission(AppointmentForm form) {
 		// Time conflict with an existing appointment
-		if (Database.findAppointment(thisUser.getID(), form.getStartTime(), form.getEndTime())) {
-                    System.out.println("handledAppointmentSubmission() - time conflict with existing appt.");    
-                    return false;
-                }
+		if (Database.findAppointment(thisUser.getID(),
+									form.getStartTime(),
+									form.getEndTime())) {
+			System.out.println("handledAppointmentSubmission() - time conflict with existing appt.");
+			return false;
+		}
 		else {
 			Appointment appt = new Appointment(form, thisUser.getID());
 			thisUser.addAppointment(appt);
+			Database.addAppointment(appt);
 			return true;
 		}
 	}
-
 
 	public static final boolean handledAppointmentCancel(int appointmentID) {
 		// User doesn't any appointments
 		if (thisUser.countAppointments() == 0) {
-                    System.out.println("handledAppointmentCancel() - user has no appts.");
-                    return false;
-                }
-                
-                for (Appointment a : thisUser.getAppointments()) {
-                    if (a.getAppID() == appointmentID) {
-			thisUser.cancelAppointment(appointmentID);
-			Database.cancelAppointment(appointmentID);
-			return true;
-                    }
+			System.out.println("handledAppointmentCancel() - user has no appts.");
+			return false;
 		}
-                System.out.println("handledAppointmentCancel() - cannot find appt. for this user");
-                return false;
+                
+		for (Appointment a : thisUser.getAppointments()) {
+			if (a.getAppID() == appointmentID) {
+				thisUser.cancelAppointment(appointmentID);
+				Database.cancelAppointment(appointmentID);
+				return true;
+			}
+		}
+
+		System.out.println("handledAppointmentCancel() - cannot find appt. for this user");
+		return false;
 	}
 
-	public static final boolean handledAppointmentChange(Appointment changeThis) {
-                if (thisUser.countAppointments() == 0) {
-                    System.out.println("handledAppointmentChange() - user has no appts.");
-                    return false;
-                }
-                for (Appointment a : thisUser.getAppointments()) {
-                    int id = changeThis.getAppID();
-                    if (a.getAppID() == id) {
-			thisUser.cancelAppointment(id);
-			Database.cancelAppointment(id);
-                        thisUser.addAppointment(changeThis);
-                        Database.addAppointment(changeThis);
-			return true;
-                    }
+	public static final boolean handledAppointmentChange(int app_id, AppointmentForm changeThis) {
+		if (thisUser.countAppointments() == 0) {
+			System.out.println("handledAppointmentChange() - user has no appts.");
+			return false;
+		}
+		if (changeThis.getEndTime()
+				.isEqual(changeThis.getStartTime())
+			|| changeThis.getEndTime()
+				.isBefore(changeThis.getStartTime())) {
+			System.out.println("handledAppointmentChange() - End time before start time");
+			return false;
+		}
+
+		for (Appointment a : thisUser.getAppointments()) {
+			int existingID = a.getAppID();
+			if (existingID == app_id) {
+				a.modify(changeThis);
+				Database.changeAppointment(app_id, a);
+				return true;
+			}
 		}
 		return false;
 	}
 
-//	public User getUser() {
-//		return thisUser;
-//	}
-//
-//	public void setUser(User user) {
-//		thisUser = user;
-//	}
+	public void setUser(User user) {
+		thisUser = user;
+	}
 
 	// Unfinished
 	private static final boolean isValidSubmission(final ArrayList<String> args) {

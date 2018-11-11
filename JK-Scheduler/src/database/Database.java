@@ -2,13 +2,12 @@ package database;
 
 import application.Appointment;
 import application.User;
+import application.convert;
 
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 public final class Database {
     private static Connection connection = null;
@@ -321,8 +320,8 @@ public final class Database {
 
                 if (!findUser(userid)) return false;
                 
-                String startTime = Appointment.format(newStart),
-                        endTime = Appointment.format(newEnd);
+                String startTime = convert.toTimestampFormat(newStart),
+                        endTime = convert.toTimestampFormat(newEnd);
 
               
                 String query = String.format(
@@ -379,8 +378,8 @@ public final class Database {
             stmt.setString(1, appointment.getName());
             stmt.setString(2, appointment.getType());
             stmt.setString(3, appointment.getLocation());
-            stmt.setString(4, Appointment.format(appointment.getStart()));
-            stmt.setString(5, Appointment.format(appointment.getEnd()));
+            stmt.setString(4, convert.toTimestampFormat(appointment.getStart()));
+            stmt.setString(5, convert.toTimestampFormat(appointment.getEnd()));
             stmt.setString(6, Integer.toString(appointment.getCreator()));
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -410,8 +409,8 @@ public final class Database {
             stmt.setString(1, appointment.getName());
             stmt.setString(2, appointment.getType());
             stmt.setString(3, appointment.getLocation());
-            stmt.setString(4, Appointment.format(appointment.getStart()));
-            stmt.setString(5, Appointment.format(appointment.getEnd()));
+            stmt.setString(4, convert.toTimestampFormat(appointment.getStart()));
+            stmt.setString(5, convert.toTimestampFormat(appointment.getEnd()));
             stmt.setString(6, Integer.toString(app_id));
 
             stmt.executeUpdate();
@@ -462,8 +461,8 @@ public final class Database {
                                     rs.getString("name"),
                                     rs.getString("type"),
                                     rs.getString("location"),
-                                    Appointment.parse(rs.getString("start_time")),
-                                    Appointment.parse(rs.getString("end_time")),
+                                    convert.toLocalDateTime(rs.getString("start_time")),
+                                    convert.toLocalDateTime(rs.getString("end_time")),
                                     userid
                             );
 
@@ -483,20 +482,24 @@ public final class Database {
 
 	// Unfinished
 	public static void changeUserInfo(User user, ArrayList<String> args) {
-		// try {
-		// if (connection == null)
-		// getConnection();
-		//
-		// //String passchange = String.format("UPDATE Users SET fname = %s, lname = %s,
-		// phone = %s, email = %s, street = %s, city = %s, state = %s, zipcode = %s
-		// WHERE username = ");
-		//
-		// PreparedStatement stmt = connection.prepareStatement(passchange);
-		// stmt.executeUpdate();
-		// }
-		// catch (SQLException e) {
-		// System.out.println(e.getMessage());
-		// }
+		 try {
+		 if (connection == null)
+		 getConnection();
+
+		 String passchange =
+				 String.format(
+					"UPDATE Users " +
+					"SET fname = %s, lname = %s, " +
+					 "phone = %s, email = %s, " +
+					 "street = %s, city = %s, state = %s, zipcode = %s " +
+					 "WHERE username = ");
+
+		 PreparedStatement stmt = connection.prepareStatement(passchange);
+		 stmt.executeUpdate();
+		 }
+		 catch (SQLException e) {
+		 	System.out.println(e.getMessage());
+		 }
 	}
 
     public static void main(String[] args) {
