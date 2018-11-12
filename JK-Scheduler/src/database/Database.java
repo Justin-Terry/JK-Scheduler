@@ -46,7 +46,7 @@ public final class Database {
                     "    CONSTRAINT userPK PRIMARY KEY(userid),\n" +
                     "    CONSTRAINT userCK UNIQUE(email),\n" +
                     "    CONSTRAINT userCK2 UNIQUE(phone)\n" +
-                    " );";
+                    " )";
 
             Statement stmt = connection.createStatement();
             stmt.execute(str);
@@ -55,6 +55,7 @@ public final class Database {
             if(e.getSQLState().compareTo("X0Y32") == 0 ) {
                 System.out.println("Table already exists");
             }else {
+            	e.printStackTrace();
                 System.exit(0);
             }
         }
@@ -77,7 +78,7 @@ public final class Database {
                     "\n" +
                     "    PRIMARY KEY(app_id),\n" +
                     "    FOREIGN KEY(created_by) REFERENCES Users(userid)\n" +
-                    ");";
+                    ")";
 
             Statement stmt = connection.createStatement();
             stmt.execute(str);
@@ -134,7 +135,7 @@ public final class Database {
 			if (connection == null)
 				getConnection();
 
-			String query = "SELECT userid " + "FROM Users " + "WHERE userid = " + Integer.toString(userid) + "";
+			String query = "SELECT userid " + "FROM Users " + "WHERE userID = " + Integer.toString(userid+1);
 
 			Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			ResultSet result = stmt.executeQuery(query);
@@ -259,7 +260,7 @@ public final class Database {
 
 			PreparedStatement stmt = connection.prepareStatement(
 					"INSERT INTO users (username, password, fName, lName, phone, email, street, city, state, zipcode) "
-							+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+							+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			stmt.setString(1, user.getUsername());
 			stmt.setString(2, user.getPassword()); /** DO NOT DO THIS **/
 			stmt.setString(3, user.getfName());

@@ -1,7 +1,9 @@
 package gui;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import application.Appointment;
 import application.Main;
 import application.User;
 import application.UserController;
@@ -71,19 +73,10 @@ public class LoginWindow {
 		loginButton.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent a) {
 				Alert badLogin = new Alert(AlertType.ERROR, "Invalid Username or Password", ButtonType.OK);
-//				database = Main.getDatabase();
 				String username = credentials.get(0).getText();
 				String password = credentials.get(1).getText();
-
 				
-				// -- If user exists --//
-                                // Move code block to a new UserController.handledLogin() method (needs to be written)
-				if (Database.findUser(username)) {
-                                    int id = Database.getUserID(username);
-                                    User user = new User(username, id);
-                                    user.populateAppointments(Database.retrieveAppointments(user.getID()));
-                                    UserController.setUser(user);
-                                    window.close();
+                                    
 //					if (Main.getUserCon().checkCredentials(username, password)) {
 //						User user = Database.getUser(username);
 //						if (user != null) {
@@ -99,11 +92,13 @@ public class LoginWindow {
 //                                        else
 //                                            badLogin.showAndWait();
                                     
-				}
+                                if (UserController.handledLogin(username, password)) {
+                                    window.close();
+                                }
                                 else
                                     badLogin.showAndWait();
-			}
-		});
+                        }
+                });
 
 		// -- If the login window is closed so is the main window --//
 		window.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -111,11 +106,9 @@ public class LoginWindow {
 				mainStage.close();
 			}
 		});
-
-	}
+        }       
 
 	public Stage getLoginWindow() {
 		return window;
 	}
-
 }

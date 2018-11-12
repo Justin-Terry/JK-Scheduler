@@ -19,14 +19,14 @@ import javafx.stage.Stage;
 public class SettingsWindow {
 	private Stage stage = new Stage();
 	private GridPane grid = new GridPane();
-	private Scene scene = new Scene(grid, 300,150);
+	private Scene scene = new Scene(grid);
 	private String[] labelStrings = {"Calendar Color", "Calendar Range"};
 	private Settings settings;
 	
 	public SettingsWindow() {
 		stage.initModality(Modality.APPLICATION_MODAL);
 		settings = Main.getSettings();
-		
+		grid.setPadding(new Insets(20));
 		MenuButton calendarRangeButton = new MenuButton("Select Calendar Range");
 		MenuItem dayRange = new MenuItem("Day");
 		MenuItem weekRange = new MenuItem("Week");
@@ -73,9 +73,16 @@ public class SettingsWindow {
 		ColorPicker colorPicker = new ColorPicker();
 		grid.add(colorPicker, 1, 0);
 		grid.add(calendarRangeButton, 1, 1);
-		grid.add(doneButton, 0, 2);
+		ColorPicker textPicker = new ColorPicker();
+		grid.add(textPicker,1,2);
+		grid.add(new Label("Text Color"), 0, 2);
+		ColorPicker apptPicker = new ColorPicker();
+		grid.add(apptPicker,1,3);
+		grid.add(new Label("Appointment Color"), 0, 3);
+		grid.add(doneButton, 0, 4);
 		grid.setColumnSpan(doneButton, 2);
 		grid.setHalignment(doneButton, HPos.CENTER);
+		
 		
 		
 		colorPicker.setOnAction(new EventHandler<ActionEvent>() {
@@ -84,6 +91,21 @@ public class SettingsWindow {
 				settings.setCalendarColor(color.substring(2,8));
 			}
 		});
+		
+		textPicker.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent t) {
+				String color = textPicker.getValue().toString();
+				settings.setTextColor(color.substring(2,8));
+			}
+		});
+		
+		apptPicker.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent t) {
+				String color = apptPicker.getValue().toString();
+				settings.setAppointmentColor(color.substring(2,8));
+			}
+		});
+		
 		
 		
 	}

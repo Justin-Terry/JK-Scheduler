@@ -1,11 +1,11 @@
 ----------------------------------------------------------------
-Thu Nov 08 13:40:53 PST 2018:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0166-f545-538e-000006a5e1f8 
-on database directory C:\Users\Justin\git\JKScheduler\JK-Scheduler\SchedulerDB with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@69222c14 
-Loaded from file:/C:/Users/Justin/git/JKScheduler/JK-Scheduler/lib/derby.jar
+Sun Nov 11 22:40:06 PST 2018:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0167-06a6-1328-000006a58ed8 
+on database directory C:\Users\Justin\git\JK-Scheduler\JK-Scheduler\SchedulerDB with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@69222c14 
+Loaded from file:/C:/Users/Justin/git/JK-Scheduler/JK-Scheduler/lib/derby.jar
 java.vendor=Oracle Corporation
 java.runtime.version=9.0.4+11
-user.dir=C:\Users\Justin\git\JKScheduler\JK-Scheduler
+user.dir=C:\Users\Justin\git\JK-Scheduler\JK-Scheduler
 os.name=Windows 10
 os.arch=amd64
 os.version=10.0

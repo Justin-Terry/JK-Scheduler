@@ -9,10 +9,9 @@ import java.io.IOException;
 import java.util.Scanner;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.paint.Color;
 
 public class Settings {
-	private int numOfSettings = 2;
+	private int numOfSettings = 4;
 	File settingsFile;
 	private String[] settings;
 	private String settingsLocation = "./";
@@ -24,6 +23,8 @@ public class Settings {
 			if(!settingsFile.isFile()) {
 				settings[0] = "1";
 				settings[1] = "cc8033";
+				settings[2] = "ffffff";
+				settings[3] = "000000";
 			}else {
                                 
 				FileReader fr = new FileReader(settingsFile);
@@ -48,6 +49,14 @@ public class Settings {
 	public void setCalendarColor(String color) {
 		settings[1] = color;
 	}
+	
+	public void setTextColor(String color) {
+		settings[2] = color;
+	}
+	
+	public void setAppointmentColor(String color) {
+		settings[3] = color;
+	}
 
 	public int getCalendarRange() {
 		int temp = settings.length > 0 ? Integer.parseInt(settings[0]) : 2;
@@ -57,6 +66,16 @@ public class Settings {
 	public String getCalendarColor() {
 		return settings[1];
 	}
+	
+	public String getAppointmentColor() {
+		return settings[3];
+	}
+	
+	public String getTextColor() {
+		String color = "#" + settings[2];
+		return color;
+	}
+	
 
 	public void writeSettings() {
 		try {
