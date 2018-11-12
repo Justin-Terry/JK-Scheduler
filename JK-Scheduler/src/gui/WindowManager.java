@@ -1,5 +1,7 @@
 package gui;
 
+import java.time.LocalDate;
+
 import application.Main;
 import application.Settings;
 import javafx.scene.Scene;
@@ -8,10 +10,11 @@ import javafx.stage.Stage;
 
 public class WindowManager {
 	private Stage mainStage;
-	MenuController menuCon;
-	BorderPane bp;
-	SceneController sceneCon;
-	Settings settings;
+	private MenuController menuCon;
+	private BorderPane bp;
+	private SceneController sceneCon;
+	private Settings settings;
+	private CalendarView calendarView;
 	
 	public WindowManager(Stage primaryStage) {
 		settings = Main.getSettings();
@@ -23,17 +26,13 @@ public class WindowManager {
 		bp = new BorderPane();
 		Scene mainScene = new Scene(bp, mainStage.getHeight(), mainStage.getWidth());
 		bp.setTop(menuCon.getMenuBar());
-		bp.setCenter(sceneCon.getCalenderPane(settings.getCalendarRange()));
+		setCalendarView();
 		setMainStage(mainScene);
 		showMainStage();	
 	}
 	
 	public void showMainStage() {
 		mainStage.show();
-	}
-	
-	public void setCalendarPane(int n) {
-		bp.setCenter(sceneCon.getCalenderPane(n));
 	}
 	
 	public void showPopUpStage(Scene sce, String title) {
@@ -70,10 +69,6 @@ public class WindowManager {
 		mainStage.setScene(s);
 	}
 	
-	public CalendarScene getMainCalendarPane() {
-		return sceneCon.getCalendar();
-	}
-	
 	public void displayLogin(Stage parentStage) {
 		LoginWindow login = new LoginWindow(parentStage);
 		login.getLoginWindow().show();
@@ -85,6 +80,52 @@ public class WindowManager {
 	
 	public void showModifyAppointment() {
 //		ModifyAppointmentWindow maw = new ModifyAppointmentWindow();
+	}
+	
+	public CalendarView getCalendarView() {
+		return calendarView;
+	}
+	
+	public void setCalendarView() {
+		int viewType = Main.getSettings().getCalendarRange();
+		switch(viewType) {
+		case 0:
+			calendarView = new DayView();
+			bp.setCenter(calendarView.getDayView());
+			break;
+		case 1:
+			calendarView = new WeekView();
+			bp.setCenter(calendarView.getCalendarDisplay());
+			break;
+		case 2:
+			calendarView = new MonthView();
+			bp.setCenter(calendarView.getCalendarDisplay());
+			break;
+			
+		}
+	}
+	
+	public void setCalendarView(LocalDate date) {
+		int viewType = Main.getSettings().getCalendarRange();
+		switch(viewType) {
+		case 0:
+			calendarView = new DayView(date);
+			bp.setCenter(calendarView.getDayView());
+			break;
+		case 1:
+			calendarView = new WeekView(date);
+			bp.setCenter(calendarView.getCalendarDisplay());
+			break;
+		case 2:
+			calendarView = new MonthView(date);
+			bp.setCenter(calendarView.getCalendarDisplay());
+			break;
+			
+		}
+	}
+	
+	public CalendarView getCalenderView() {
+		return calendarView;
 	}
 	
 	
