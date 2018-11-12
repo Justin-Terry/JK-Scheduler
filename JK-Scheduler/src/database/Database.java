@@ -15,8 +15,8 @@ public final class Database {
     private HashMap<String, String> creds = new HashMap<String, String>();//<username, password>
 
     public Database() {
-//        createUsersTable();
-//        createAppointmentsTable();
+        createUsersTable();
+        createAppointmentsTable();
         populateCredentials();
     }
     

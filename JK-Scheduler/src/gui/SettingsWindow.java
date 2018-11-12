@@ -31,27 +31,24 @@ public class SettingsWindow {
 		MenuItem dayRange = new MenuItem("Day");
 		MenuItem weekRange = new MenuItem("Week");
 		MenuItem monthRange = new MenuItem("Month");
-		Button doneButton = new Button("Done");
+		Button doneButton = new Button("Submit Changes");
 		
 		calendarRangeButton.getItems().addAll(dayRange,weekRange,monthRange);
 		
 		dayRange.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent a) {
-				Main.getWindowManager().setCalendarPane(0);
 				settings.setCalendarRange(0);
 			}
 		});
 		
 		weekRange.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent a) {
-				Main.getWindowManager().setCalendarPane(1);
 				settings.setCalendarRange(1);
 			}
 		});
 		
 		monthRange.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent a) {
-				Main.getWindowManager().setCalendarPane(2);
 				settings.setCalendarRange(2);
 			}
 		});		
@@ -59,6 +56,8 @@ public class SettingsWindow {
 		doneButton.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent a) {
 				settings.writeSettings();
+				Main.getWindowManager().getCalenderView().setCalendarColor();
+				Main.getWindowManager().setCalendarView(Main.getWindowManager().getCalendarView().calendarDate);
 				stage.close();
 			}
 		});
@@ -82,7 +81,6 @@ public class SettingsWindow {
 		colorPicker.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent t) {
 				String color = colorPicker.getValue().toString();
-				Main.getWindowManager().getMainCalendarPane().setCalendarColor(color.substring(2,8));
 				settings.setCalendarColor(color.substring(2,8));
 			}
 		});
