@@ -98,6 +98,20 @@ public class UserController {
 		}
 	}
 	
+        public static final boolean handledLogin(String username, String password) {
+            if (Database.findUser(username)) {
+                int id = Database.getUserID(username);
+                User user = new User(username, id);
+                user.populateAppointments(Database.retrieveAppointments(user.getID()));
+                thisUser = user;
+                return true;
+            }
+            else {
+                System.out.println("UserController.handledLogin() - Invalid username or password.");
+                return false;
+            }
+        }
+        
 	public static final boolean handledAccountCreation(final ArrayList<String> args) {
 		if (isValidSubmission(args)) {
 			createNewUser(args);
@@ -106,8 +120,7 @@ public class UserController {
 		else
 			return false;
 	}
-
-        //System.out.println("UserController.() - ");
+        
 	public final static boolean handledUsernameChange(String oldName, String newName) {
 
 		if ( !Database.findUser(oldName)) {
