@@ -7,7 +7,7 @@ public class WindowTester extends Application {
     @Override
     public void start(Stage primaryStage) {
         CreateAppointmentWindow caw = new CreateAppointmentWindow();
-//        AppointmentsWindow aw = new AppointmentsWindow();
+//        AppointmentListWindow aw = new AppointmentListWindow();
 //        ModifyAppointmentWindow maw = new ModifyAppointmentWindow();
     }
 
