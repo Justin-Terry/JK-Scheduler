@@ -26,7 +26,6 @@ public class WindowManager {
 		bp = new BorderPane();
 		Scene mainScene = new Scene(bp, mainStage.getHeight(), mainStage.getWidth());
 		bp.setTop(menuCon.getMenuBar());
-		setCalendarView();
 		setMainStage(mainScene);
 		showMainStage();	
 	}

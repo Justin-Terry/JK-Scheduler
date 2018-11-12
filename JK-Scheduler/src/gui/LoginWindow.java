@@ -1,7 +1,9 @@
 package gui;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import application.Appointment;
 import application.Main;
 import application.User;
 import database.Database;
@@ -74,25 +76,29 @@ public class LoginWindow {
 				String username = credentials.get(0).getText();
 				String password = credentials.get(1).getText();
 
-				window.close();
 				// -- If user exists --//
-//				if (database.findUser(username)) {
-//					if (Main.getUserCon().checkCredentials(username, password)) {
-//						User user = Database.getUser(username);
-//						if (user != null) {
-//							Main.setCurrentUser(user);
-//							user.populateAppointments(Database.retrieveAppointments(user.getID()));
-//							System.out.println(Main.getCurrentUser().getfName());
-//						}
-//
-//						window.close();
-//					} else {
-//						badLogin.showAndWait();
-//					}
-//				}else {
-//
-//					badLogin.showAndWait();
-//				}
+				if (database.findUser(username)) {
+					if (Main.getUserCon().checkCredentials(username, password)) {
+						User user = Database.getUser(username);
+						if (user != null) {
+							Main.setCurrentUser(user);
+							user.populateAppointments(Database.retrieveAppointments(user.getID()));
+							System.out.println(Main.getCurrentUser().getfName());
+						}
+						//String name, String type, String location, LocalDateTime start, LocalDateTime end, int userid
+						LocalDateTime start = LocalDateTime.now().plusDays(1);
+						LocalDateTime end = LocalDateTime.now().plusDays(1).plusHours(1);
+						user.addAppointment(new Appointment("11/12", "Public", "Test",start,end, user.getID()));
+						user.addAppointment(new Appointment("12/12", "Public", "Test", start.plusMonths(1), end.plusMonths(1).plusHours(1).plusMinutes(30), user.getID()));
+						Main.getWindowManager().setCalendarView();
+						window.close();
+					} else {
+						badLogin.showAndWait();
+					}
+				}else {
+
+					badLogin.showAndWait();
+				}
 			}
 		});
 

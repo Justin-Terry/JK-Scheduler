@@ -26,7 +26,7 @@ public class Main extends Application {
 	
 	public static void main(String[] args) {
 		userCon = new UserController();
-//		schedulerDB = new Database();
+		schedulerDB = new Database();
 		launch(args);
 	}
 	

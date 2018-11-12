@@ -30,13 +30,13 @@ public class CreateAppointmentWindow {
 	private String[] labelText = {"Name", "Type", "Location", "Date", "Start Time", "End Time"};
 	private ObservableList<Integer> hourOptions = FXCollections.observableArrayList(1,2,3,4,5,6,7,8,9,10,11,12);
 	private ObservableList<String> typeOptions = FXCollections.observableArrayList("Private", "Public");
-	private ObservableList<String> minuteOptions;
+	private static ObservableList<String> minuteOptions;
 	private ObservableList<String> ampmOptions = FXCollections.observableArrayList("AM", "PM");
 	private final ComboBox typeOptionBox = new ComboBox(typeOptions);
 	private final ComboBox startHourBox = new ComboBox(hourOptions);
 	private final ComboBox endHourBox = new ComboBox(hourOptions);
-	private static ComboBox startMinuteBox;
-	private final ComboBox endMinuteBox = new ComboBox(minuteOptions);
+	private final ComboBox startMinuteBox;
+	private final ComboBox endMinuteBox;
 	private final ComboBox startAMPMBox = new ComboBox(ampmOptions);
 	private final ComboBox endAMPMBox = new ComboBox(ampmOptions);
 	private static TextField nameText = new TextField();
@@ -45,6 +45,8 @@ public class CreateAppointmentWindow {
 	
 	CreateAppointmentWindow(){
 		setUpMinuteOptions();
+		startMinuteBox = new ComboBox<String>(minuteOptions);
+		endMinuteBox = new ComboBox<String>(minuteOptions);
 		stage = new Stage();
 		stage.setTitle("Create Appointment");
 
@@ -103,9 +105,8 @@ public class CreateAppointmentWindow {
 	
 	void setUpMinuteOptions() {
 		minuteOptions = FXCollections.observableArrayList();
-		for(int i = 1; i < 60; i++) {
+		for(int i = 0; i < 60; i++) {
 			minuteOptions.add(String.format("%02d", i));
 		}
-		startMinuteBox = new ComboBox<String>(minuteOptions);
 	}
 }

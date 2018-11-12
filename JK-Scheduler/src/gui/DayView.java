@@ -3,8 +3,10 @@ package gui;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import application.Appointment;
 import application.Main;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
@@ -60,20 +62,19 @@ public class DayView extends CalendarView{
 		int gridBox = 1;
 		for(int i = 0; i < 24;i++) {
 			DateBox db1 = new DateBox(calendarDate, i,00);
-			DateBox db2 = new DateBox(calendarDate, i,30);
+			DateBox db2 = new DateBox(calendarDate, i,30);		
 			
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("hh:mm a");
+			DateBox blank = new DateBox();
+			blank.setDateBoxColor("");
 			dayGrid.add(new Label(db1.getBoxTime().format(dtf)), 0, gridBox);
+			appointmentsGrid.add(blank.getDateBox(), 0, gridBox);
 			dayGrid.add(db1.getDateBox(), 1, gridBox++);
+			blank = new DateBox();
+			blank.setDateBoxColor("");
 			dayGrid.add(new Label(db2.getBoxTime().format(dtf)), 0, gridBox);
+			appointmentsGrid.add(blank.getDateBox(), 0, gridBox);
 			dayGrid.add(db2.getDateBox(), 1, gridBox++);
-			if(i == 0) {
-				dayGrid.getRowConstraints().add(row1Cons);
-				appointmentsGrid.getRowConstraints().add(row1Cons);
-			}else {
-				dayGrid.getRowConstraints().add(rowCons);
-				appointmentsGrid.getRowConstraints().add(rowCons);
-			}
 			
 		}
 		
@@ -87,8 +88,11 @@ public class DayView extends CalendarView{
 			public void handle(ActionEvent a) {
 				Main.getWindowManager().setCalendarView(calendarDate.minusDays(1));
 			}
-		});		
+		});	
+		
+		setupAppts();
 	}
+	
 	
 	public GridPane getCalendarDisplay() {
 		return dayGrid;
@@ -120,6 +124,15 @@ public class DayView extends CalendarView{
 		appointmentsGrid.getColumnConstraints().addAll(col1, appointmentsCols,appointmentsCols,appointmentsCols,appointmentsCols, col3);
 		dayGrid.getColumnConstraints().addAll(col1, col2,col3);
 		
+		for(int i = 0; i < 100; i++) {
+			if(i == 0) {
+				dayGrid.getRowConstraints().add(row1Cons);
+				appointmentsGrid.getRowConstraints().add(row1Cons);
+			}else {
+				dayGrid.getRowConstraints().add(rowCons);
+				appointmentsGrid.getRowConstraints().add(rowCons);
+			}
+		}
 		
 		
 		
@@ -134,5 +147,40 @@ public class DayView extends CalendarView{
 		sp.setFitToWidth(true);
 		sp.setContent(dayStack);
 		return sp;
+	}
+	
+	//12:00AM = grid 1
+	public void setupAppts() {
+		// (Node, row, col)
+		int apptsAdded = 0;
+		for(Appointment a: Main.getCurrentUser().getAppointments()) {
+			if(a.getStart().toLocalDate().equals(calendarDate)) {
+				int startHr = a.getStart().getHour();
+				int endHr = a.getEnd().getHour();
+				int startM = a.getStart().getMinute();
+				int endM = a.getEnd().getMinute();
+				
+				int hours = endHr - startHr;
+				int mins = endM - startM;
+				
+				int span = hours*2;
+				if(mins >= 30) {
+					span += 1;
+				}
+				
+				
+				startHr = startHr*2;
+				System.out.println("Sthr" + startHr);
+				if(a.getStart().getMinute() < 30) {
+					AppointmentBox apb = new AppointmentBox(a);
+					appointmentsGrid.add(apb.getBox(), 1, startHr);
+					appointmentsGrid.setRowSpan(apb.getBox(), span);
+				}else {
+					AppointmentBox apb = new AppointmentBox(a);
+					appointmentsGrid.add(apb.getBox(), 1, startHr + 1);
+				}
+			}
+		}
+
 	}
 }

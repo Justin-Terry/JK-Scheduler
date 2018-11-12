@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 
+import application.Appointment;
 import application.Main;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -30,6 +31,7 @@ public class MonthView extends CalendarView {
 	private LocalDate firstDayOfMonth;
 	private Insets cellMargin = new Insets(1);
 	private ArrayList<DateBox> dateBoxes;
+	private ArrayList<Appointment> appointments;
 
 	public MonthView() {
 		monthName = calendarsMonth.toString();
@@ -86,7 +88,7 @@ public class MonthView extends CalendarView {
 				if (numberOfDaysAdded < numberOfDays) {
 					if (i < firstDayOfWeek && !firstAdded && !(firstDayOfWeek == 7)) {
 						DateBox blank = new DateBox();
-						blank.setDateBoxColor("999999");
+						blank.setDateBoxColor("aaaaaa");
 						monthGrid.add(blank.getDateBox(), i, j);
 						monthGrid.setMargin(blank.getDateBox(), cellMargin);
 					} else {
@@ -96,8 +98,7 @@ public class MonthView extends CalendarView {
 						dateBoxes.add(temp);
 						addingDate = addingDate.plusDays(1);
 						numberOfDaysAdded++;
-						monthGrid.setMargin(temp.getDateBox(), cellMargin);
-
+						
 					}
 				}
 				if (j == 2) {
@@ -155,6 +156,10 @@ public class MonthView extends CalendarView {
 		for (DateBox d : dateBoxes) {
 			d.setDateBoxColor(Main.getSettings().getCalendarColor());
 		}
+	}
+	
+	public void getMonthsAppointments() {
+		
 	}
 
 }

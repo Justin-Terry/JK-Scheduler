@@ -268,29 +268,6 @@ public class UserController {
 		return false;
 	}
 
-	public static void main(String[] args) {
-//		UserController uc = new UserController();
-//
-//		final int USERID = 7;
-//		User me = new User(USERID);
-//
-//		for (int i = 0; i < 15; i++) {
-//			Appointment app = new Appointment(
-//					String.valueOf(i),
-//					"idk",
-//					"anywhere",
-//					Appointment.parse("2018-11-09 04:44"),
-//					Appointment.parse("2018-11-09 04:44"),
-//					USERID
-//			);
-//			me.addAppointment(app);
-//		}
-//		uc.setUser(me);
-//
-//
-//		uc.exportSchedule("schedule");
-	}
-
 	// Input validation patterns
 	private static final String
 	USER = "[a-zA-Z]\\w{12}",
