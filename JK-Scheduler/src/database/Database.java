@@ -3,6 +3,7 @@ package database;
 import application.Appointment;
 import application.User;
 import application.convert;
+import static java.lang.System.exit;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -15,8 +16,8 @@ public final class Database {
     private HashMap<String, String> creds = new HashMap<String, String>();//<username, password>
 
     public Database() {
-        createUsersTable();
-        createAppointmentsTable();
+//        createUsersTable();
+//        createAppointmentsTable();
         populateCredentials();
     }
     
@@ -218,14 +219,30 @@ public final class Database {
 
 			String query = "SELECT userid " + "FROM Users " + "WHERE username = \'" + username + "\'";
 
-			Statement stmt = connection.createStatement();
-			ResultSet result = stmt.executeQuery(query);
+			PreparedStatement stmt = 
+                                connection.prepareStatement(
+                                        "SELECT userid FROM users WHERE username = ?",
+                                        ResultSet.TYPE_SCROLL_INSENSITIVE, 
+                                        ResultSet.CONCUR_READ_ONLY);
+                        stmt.setString(1, username);
+			ResultSet result = stmt.executeQuery();
 
+                        
 			// Need to check for correctness
-			return Integer.parseInt(result.getString(1));
+                        result.last();
+                        if (result.getRow() == 0) {
+                            System.out.println("Database.getUserID() - No user ID found for this username");
+                            return -1;
+                        }
+                        else if (result.getRow() > 1) {
+                            System.out.println("Database.getUserID() - Multiple user IDs found for this username");
+                            return -1;
+                        }
+                        else
+                            return Integer.parseInt(result.getString("USERID"));
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
-			return -1;
+                        return -1;
 		}
 	}
 
@@ -356,6 +373,51 @@ public final class Database {
             }
 	}
 
+    public static final int getAppID(int userid, LocalDateTime newStart, LocalDateTime newEnd) {
+        int id = -1;
+        try {
+            if (connection == null) 
+                getConnection();
+
+            if (!findUser(userid)) {
+                System.out.println("Database.getAppID() - User ID not found.");
+                return id;
+            }
+                
+            String startTime = convert.toTimestampFormat(newStart),
+                    endTime = convert.toTimestampFormat(newEnd);
+
+            String query = 
+                    "SELECT app_id FROM Appointments INNER JOIN Users \n" +
+                    "ON Appointments.created_by = Users.userid \n" +
+                    "WHERE Appointments.start_time = ? \n" +
+                    "AND Appointments.end_time = ? \n";
+            
+            PreparedStatement stmt = 
+                    connection.prepareStatement(query, 
+                                                ResultSet.TYPE_SCROLL_INSENSITIVE, 
+                                                ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, startTime);
+            stmt.setString(2, endTime);
+            
+            ResultSet result = stmt.executeQuery();
+            
+            if (result.next()) {
+                id = result.getInt("app_id");
+                System.out.println("Database.getAppID() - New appointment with ID: " + id + ".");
+            }
+            else {
+                System.out.println("Database.getAppID() - Appointment for this start & end not found.");
+            }
+        } 
+        catch (SQLException e) {
+            System.out.println("Database.getAppID() - " + e.getMessage());
+        }
+        finally {
+            return id;
+        }
+    }
+        
     /**
      * Add a new appointment to the database
      * @param appointment - The appointment to add
@@ -367,7 +429,7 @@ public final class Database {
             }
 
             if (!findUser(appointment.getCreator())) {
-                System.out.println("Error - could not find user");
+                System.out.println("Database.addAppointment() - could not find user");
                 return;
             }
 
@@ -438,10 +500,10 @@ public final class Database {
     // Untested
     public static final ArrayList<Appointment> retrieveAppointments(int userid) {
         ArrayList<Appointment> appointments = new ArrayList<>();
+        int rowCount = 0;
             try {
-                if (connection == null) {
+                if (connection == null)
                     getConnection();
-                }
 
             String query = 
                     "SELECT * \n" + 
@@ -457,6 +519,7 @@ public final class Database {
                 int numCols = rsmd.getColumnCount();
 
                 do {
+                    rowCount++;
                     Appointment a = new Appointment(
                                     rs.getString("name"),
                                     rs.getString("type"),
@@ -465,20 +528,17 @@ public final class Database {
                                     convert.toLocalDateTime(rs.getString("end_time")),
                                     userid
                             );
-
+                    a.setAppID(rs.getInt("app_id"));
                     appointments.add(a);
                 } while (rs.next());
-            } else {
-                System.out.printf("\nQuery returned 0 results.\n");
             }
-
-        } catch (SQLException e) {
-            
-            System.out.println("retrieveAppointments() - " + e.getMessage());
+            }
+         catch (SQLException e) {
+            System.out.println("Datebase.retrieveAppointments() - " + e.getMessage());
         }
+        System.out.printf("\nDatabase.retrieveAppointments() - Query returned "+rowCount+" results.\n");
         return appointments;
     }
-    
 
 	// Unfinished
 	public static void changeUserInfo(User user, ArrayList<String> args) {

@@ -5,6 +5,7 @@ import java.util.Calendar;
 import database.Database;
 import gui.SettingsWindow;
 import gui.WindowManager;
+import java.io.File;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -18,15 +19,16 @@ public class Main extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) {
+                System.out.println(new File(".").getAbsolutePath());
 		winMan = new WindowManager(primaryStage);
 		winMan.displayLogin(primaryStage);
-		
-		
+
+
 	}
 	
 	public static void main(String[] args) {
 		userCon = new UserController();
-//		schedulerDB = new Database();
+		schedulerDB = new Database();
 		launch(args);
 	}
 	

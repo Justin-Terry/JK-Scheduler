@@ -11,6 +11,10 @@ public class User {
 	private Address address;
 
 	public User(final int userid) { this.userid = userid; }
+        public User(final String username, final int userid) { 
+            this.username = username;
+            this.userid = userid; 
+        }
 
 	/**
 	 *  Pass an array of information fields from UserController 'createAccount' method

@@ -10,9 +10,11 @@ public interface convert {
     }
 
     static int to24Hour(int hour, String period) {
+        if (hour < 1 || hour > 12)
+            return -1;
         switch(period) {
-            case "AM": return hour;
-            case "PM": return hour+12;
+            case "AM": return hour < 12 ? hour : 0;
+            case "PM": return hour < 12 ? hour+12 : 12;
             default: return -1;
         }
     }

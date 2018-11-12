@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Scanner;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.paint.Color;
@@ -14,20 +15,19 @@ public class Settings {
 	private int numOfSettings = 2;
 	File settingsFile;
 	private String[] settings;
-	private String settingsLocation = "./settings.txt";
+	private String settingsLocation = "./";
 
 	public Settings() {
 		settings = new String[numOfSettings];
 		try {
-			settingsFile = new File(settingsLocation);
-			if(settingsFile.createNewFile()) {
+			settingsFile = new File(settingsLocation+"settings.txt");
+			if(!settingsFile.isFile()) {
 				settings[0] = "1";
 				settings[1] = "cc8033";
 			}else {
-			
+                                
 				FileReader fr = new FileReader(settingsFile);
 				BufferedReader settingsReader = new BufferedReader(fr);
-
 				for (int i = 0; i < numOfSettings; i++) {
 					settings[i] = settingsReader.readLine();
 				}
@@ -50,7 +50,7 @@ public class Settings {
 	}
 
 	public int getCalendarRange() {
-		int temp = Integer.parseInt(settings[0]);
+		int temp = settings.length > 0 ? Integer.parseInt(settings[0]) : 2;
 		return temp;
 	}
 

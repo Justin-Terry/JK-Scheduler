@@ -52,7 +52,7 @@ public class CreateAppointmentWindow extends AppointmentWindow {
 													(String)EPB.getValue()),
 											Integer.parseInt((String)EMB.getValue())));
 
-				if (UserController.handledAppointmentSubmission(form))
+				if (UserController.handledAppointmentCreation(form))
 					stage.close();
 				
 			}
