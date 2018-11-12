@@ -134,7 +134,7 @@ public final class Database {
 			if (connection == null)
 				getConnection();
 
-			String query = "SELECT userid " + "FROM Users " + "WHERE userid = " + Integer.toString(userid) + "";
+			String query = "SELECT userid " + "FROM Users " + "WHERE userID = " + Integer.toString(userid+1);
 
 			Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			ResultSet result = stmt.executeQuery(query);

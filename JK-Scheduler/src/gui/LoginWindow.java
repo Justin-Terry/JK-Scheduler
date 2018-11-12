@@ -86,10 +86,18 @@ public class LoginWindow {
 							System.out.println(Main.getCurrentUser().getfName());
 						}
 						//String name, String type, String location, LocalDateTime start, LocalDateTime end, int userid
+						
+						// == TEST APPOINTMENTS --//
 						LocalDateTime start = LocalDateTime.now().plusDays(1);
 						LocalDateTime end = LocalDateTime.now().plusDays(1).plusHours(1);
-						user.addAppointment(new Appointment("11/12", "Public", "Test",start,end, user.getID()));
-						user.addAppointment(new Appointment("12/12", "Public", "Test", start.plusMonths(1), end.plusMonths(1).plusHours(1).plusMinutes(30), user.getID()));
+						Appointment test1 = new Appointment("11/12", "Public", "Test",start,end, user.getID());
+						user.addAppointment(test1);
+						Appointment test2 = new Appointment("12/12", "Public", "Test", start.plusMonths(1), end.plusMonths(1).plusHours(1).plusMinutes(30), user.getID());
+						user.addAppointment(test2);
+						database.addAppointment(test2);
+						// -- END TEST APPOINTMENTS --//
+						
+						
 						Main.getWindowManager().setCalendarView();
 						window.close();
 					} else {
