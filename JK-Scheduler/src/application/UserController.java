@@ -296,7 +296,7 @@ public class UserController {
 	}
 
 	// Put this in database interface
-	public boolean checkCredentials(String user, String attempted) {
+	public static boolean checkCredentials(String user, String attempted) {
 		String actual = Main.getDatabase().getUserCredentials(user);
 		if(attempted.compareTo(actual) == 0) {
 			return true;

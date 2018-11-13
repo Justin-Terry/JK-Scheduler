@@ -173,11 +173,12 @@ public class DayView extends CalendarView{
 				System.out.println("Span " + span);
 				if(a.getStart().getMinute() < 30) {
 					AppointmentBox apb = new AppointmentBox(a);
-					appointmentsGrid.add(apb.getBox(), 1, startHr);
+					appointmentsGrid.add(apb.getBox(), 1, startHr+1);
 					appointmentsGrid.setRowSpan(apb.getBox(), span);
 				}else {
 					AppointmentBox apb = new AppointmentBox(a);
-					appointmentsGrid.add(apb.getBox(), 1, startHr + 1);
+					appointmentsGrid.add(apb.getBox(), 1, startHr + 2);
+					appointmentsGrid.setRowSpan(apb.getBox(), span);
 				}
 			}
 		}

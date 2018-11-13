@@ -47,8 +47,8 @@ public class ModifyAppointmentWindow extends AppointmentWindow {
         locationText.setText(location);
 
         // Start hour, minute, period, date
-        SHB.getSelectionModel().select(hours.get(startHour-1));
-        SMB.getSelectionModel().select(minutes.get(startMinute-1));
+        SHB.getSelectionModel().select(hours.get(startHour%12-1));
+        SMB.getSelectionModel().select(minutes.get(startMinute));
         SPB.getSelectionModel().select(IntStream.range(0,periods.length)
                                                 .filter(i -> startPeriod.equals(periods[i]))
                                                 .findFirst()
@@ -56,8 +56,8 @@ public class ModifyAppointmentWindow extends AppointmentWindow {
         dpStart.setValue(start.toLocalDate());
 
         // End hour, minute, period, date
-        EHB.getSelectionModel().select(hours.get(endHour-1));
-        EMB.getSelectionModel().select(minutes.get(endMinute-1));
+        EHB.getSelectionModel().select(hours.get(endHour%12-1));
+        EMB.getSelectionModel().select(minutes.get(endMinute));
         EPB.getSelectionModel().select(IntStream.range(0,periods.length)
                                                 .filter(i -> endPeriod.equals(periods[i]))
                                                 .findFirst()
@@ -85,6 +85,7 @@ public class ModifyAppointmentWindow extends AppointmentWindow {
                                                 Integer.parseInt((String)EMB.getValue())));
 
                 if ( UserController.handledAppointmentChange(app_id, form) )
+                	Main.getWindowManager().setCalendarView();
                     stage.close();
             }
         });

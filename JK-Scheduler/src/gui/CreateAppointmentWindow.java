@@ -1,6 +1,7 @@
 package gui;
 
 import application.AppointmentForm;
+import application.Main;
 import application.UserController;
 import application.convert;
 import javafx.event.ActionEvent;
@@ -53,6 +54,7 @@ public class CreateAppointmentWindow extends AppointmentWindow {
 											Integer.parseInt((String)EMB.getValue())));
 
 				if (UserController.handledAppointmentCreation(form))
+					Main.getWindowManager().setCalendarView();
 					stage.close();
 				
 			}
