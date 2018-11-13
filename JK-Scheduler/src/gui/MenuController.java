@@ -1,21 +1,79 @@
 package gui;
 
 import application.Main;
+import application.UserController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MenuController {
 	private MenuBar menuBar = new MenuBar();
 	
 	public MenuController() {
-		menuBar.getMenus().addAll(getAccountMenu(), getAppointmentMenu(), getSettingsMenu(), getHelpMenu());
+		menuBar.getMenus().addAll(getFileMenu(), getAccountMenu(), getAppointmentMenu(), getSettingsMenu(), getHelpMenu());
 	}
 	
 	public MenuBar getMenuBar() {
 		return menuBar;
+	}
+
+	private Menu getFileMenu() {
+		Desktop desktop = Desktop.getDesktop();
+		Menu fileMenu = new Menu("File");
+		MenuItem Import = new MenuItem("Import Schedule"),
+				Export = new MenuItem("Export Schedule");
+
+		Import.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(final ActionEvent e) {
+				final FileChooser fileChooser = new FileChooser();
+				fileChooser.setTitle("Choose schedule file(s) to Import");
+				List<File> list = fileChooser.showOpenMultipleDialog(null);
+				if (list != null) {
+					for (File file : list) {
+						try {
+							UserController.importSchedule(file);
+						} catch (Exception ex) {
+							Logger.getLogger(
+									MenuController.class.getName()).log(
+									Level.SEVERE, null, ex
+							);
+						}
+					}
+				}
+			}
+		});
+
+		Export.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				DirectoryChooser dc = new DirectoryChooser();
+				dc.setTitle("Save schedule file");
+				File dir = dc.showDialog(null);
+				if (dir != null) {
+					UserController.exportSchedule(dir, "myschedule.txt");
+				}
+			}
+		});
+
+		fileMenu.getItems().addAll(Import, Export);
+		return fileMenu;
+	}
+
+	private void openFile(File file) {
+
 	}
 	
 	private Menu getAccountMenu() {

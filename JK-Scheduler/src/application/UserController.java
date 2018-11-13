@@ -17,31 +17,34 @@ public class UserController {
 	 * and outputs the user's schedule in it.
 	 * @param filename - The name of the output file
 	 */
-	public void exportSchedule(String filename) {
+	public static void exportSchedule(File dir, String filename) {
+		/**
+		 * Code to test writing a schedule using the export menu option
+		 */
+//		thisUser = new User("jim", 6);
+//		thisUser.setID(5);
+//		thisUser.addAppointment(new Appointment(String.valueOf((char)6),
+//				"idk",
+//				"anywhere",
+//				convert.toLocalDateTime("2018-11-09 04:44:00.0"),
+//				convert.toLocalDateTime("2018-11-09 04:44:00.0"),
+//				6));
+
+		File schedule = new File(dir, filename);
 		try{
 			if (thisUser.getAppointments().size() == 0) {
 				System.out.println("UserController.exportScheduler() - user has no appointments");
-				return;
 			}
 
-			String dirName = "./Schedules/";
-			File dir = new File(dirName);
+			schedule.createNewFile();
 
-			if (!dir.exists())
-				dir.mkdir();
-
-			String fn = filename;
-			File sched = new File(dirName + fn);
-			sched.createNewFile();
-
-			FileWriter fw = new FileWriter(sched);
+			FileWriter fw = new FileWriter(schedule);
 			BufferedWriter writer = new BufferedWriter(fw);
 
 			writer.write("UID=" + thisUser.getID() + "\n");
 
-			for (Appointment a : thisUser.getAppointments()) {
+			for (Appointment a : thisUser.getAppointments())
 				writer.write(a.toString() + "\n");
-			}
 
 			writer.close();
 		}
@@ -49,37 +52,43 @@ public class UserController {
 			System.out.print("UserController.exportSchedule() - ");
 			e.printStackTrace();
 		}
+		finally {
+		}
 	}
 
-	public void importSchedule(String filename) {
+	public static void importSchedule(File filename) {
 		try{
-			String dirName = "./Schedules/";
-			File dir = new File(dirName);
-
-			if (!dir.exists()) {
-				System.out.println("UserController.importSchedule() - ./Schedules/ not found");
-				return;
-			}
-
-			String fn = filename;
-			File sched = new File(dirName + fn);
-			Scanner reader = new Scanner(sched);
+			Scanner reader = new Scanner(filename);
 
 			if (reader.hasNextLine()) {
-				int created_by = Integer.parseInt(reader.nextLine());
+				String f = reader.nextLine();
+				if ( !f.matches("UID=\\d+") ) {
+					System.out.println("UserController.importSchedule() - File content format is incorrect (Expected \"UID=1234\")");
+					return;
+				}
+
+				int created_by = Integer.parseInt(f);
 
 				while (reader.hasNextLine()) {
-					String[] args = reader.nextLine().split(" | ");
+					String eventLine = reader.nextLine();
+
+					String pattern = "Event title=(.*)? \\| Type=(Private|Public) \\| Location=(.*)? \\| Start=\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d \\| End=\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d";
+					if ( !eventLine.matches(pattern) ) {
+						System.out.println("UserController.importSchedule() - File format is incorrect");
+						return;
+					}
+
+					String[] args = eventLine.split(" | ");
 
 					if (args.length != 5) {
-						System.out.println("UserController.importSchedule() - problem reading file " + filename);
+						System.out.println("UserController.importSchedule() - Mismatched number of arguments");
 						return;
 					}
 
 					Appointment addThis = new Appointment(args[0], args[1], args[2], convert.toLocalDateTime(args[3]), convert.toLocalDateTime(args[4]), created_by);
 
 					if ( Database.findAppointment(thisUser.getID(), addThis.getStart(), addThis.getEnd()) ) {
-						System.out.println("UserController.importSchedule() - appointment time conflict");
+						System.out.println("UserController.importSchedule() - Appointment time conflict");
 					}
 					else {
 						thisUser.addAppointment(addThis);
