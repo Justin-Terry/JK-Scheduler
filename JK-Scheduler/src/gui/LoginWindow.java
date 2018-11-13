@@ -94,11 +94,9 @@ public class LoginWindow {
                                     
                                 if (UserController.handledLogin(username, password)) {
                                 	// Inserting test appointment into arraylist, bypasses DB
-                                	Main.getCurrentUser().addAppointment(new Appointment("TEST", "Public", "TEST", LocalDateTime.now(), LocalDateTime.now().plusHours(2), Main.getCurrentUser().getID()));
-                                	Main.getCurrentUser().addAppointment(new Appointment("TEST2", "Public", "TEST2", LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(1).plusHours(2), Main.getCurrentUser().getID()));
-                                	Main.getCurrentUser().addAppointment(new Appointment("TEST3", "Public", "TEST3", LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(3).plusHours(2), Main.getCurrentUser().getID()));
-                                	Main.getCurrentUser().addAppointment(new Appointment("TEST4", "Public", "TEST4", LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(3).plusHours(2), Main.getCurrentUser().getID()));
-
+                                	for(int i = 0; i < 50; i++) {
+                                		Main.getCurrentUser().addAppointment(new Appointment("TEST" + i, "Public", "TEST" + i, LocalDateTime.now().plusDays(i), LocalDateTime.now().plusDays(i).plusHours(2), Main.getCurrentUser().getID()));
+                                	}
                                 	// Reset the calendar view to include new users appointments
                                 	Main.getWindowManager().setCalendarView();
                                     window.close();
