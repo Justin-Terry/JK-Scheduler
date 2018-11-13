@@ -130,6 +130,12 @@ public class MenuController {
 				Main.getWindowManager().showModifyAppointment();
 			}
 		});
+		
+		cancelAppointment.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent a) {
+				CancelAppointmentWindow caw = new CancelAppointmentWindow();
+			}
+		});
 
 		appointmentMenu.getItems().addAll(makeAppointment, cancelAppointment, changeAppointment);
 		return appointmentMenu;
