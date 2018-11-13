@@ -60,12 +60,14 @@ public class User {
 	}
 
 	public void cancelAppointment(int appointmentID) {
+		System.out.println("BEFORE: " + appointments);
 		for (Appointment a : appointments) {
-			if (appointmentID == a.getCreator()) {
+			if (appointmentID == a.getAppID()) {
 				appointments.remove(a);
 				return;
 			}
 		}
+		System.out.println("AFTER: " + appointments);
 	}
 
 //	public void changeAppointment(AppointmentForm form) {

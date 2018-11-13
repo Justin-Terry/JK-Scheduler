@@ -93,8 +93,10 @@ public class LoginWindow {
 //                                            badLogin.showAndWait();
                                     
                                 if (UserController.handledLogin(username, password)) {
-                                	
+                                	// Inserting test appointment into arraylist, bypasses DB
                                 	Main.getCurrentUser().addAppointment(new Appointment("TEST", "Public", "TEST", LocalDateTime.now(), LocalDateTime.now().plusHours(2), Main.getCurrentUser().getID()));
+                                	
+                                	// Reset the calendar view to include new users appointments
                                 	Main.getWindowManager().setCalendarView();
                                     window.close();
                                 }

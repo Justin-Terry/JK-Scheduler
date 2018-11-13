@@ -45,6 +45,7 @@ public class AppointmentView {
 
 				if (confirm.getResult().equals(ButtonType.OK)) {
 					Main.getCurrentUser().cancelAppointment(a.getAppID());
+					System.out.println("Tried to cancel apptID " + a.getAppID());
 					Main.getWindowManager().setCalendarView();
 					stage.close();
 				} else {
