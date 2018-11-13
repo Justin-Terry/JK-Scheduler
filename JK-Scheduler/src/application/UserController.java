@@ -108,7 +108,7 @@ public class UserController {
 	}
 	
         public static final boolean handledLogin(String username, String password) {
-            if (Database.findUser(username)) {
+            if (checkCredentials(username, password)) {
                 int id = Database.getUserID(username);
                 User user = new User(username, id);
                 Main.setCurrentUser(user);
