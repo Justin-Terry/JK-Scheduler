@@ -111,6 +111,7 @@ public class UserController {
             if (Database.findUser(username)) {
                 int id = Database.getUserID(username);
                 User user = new User(username, id);
+                Main.setCurrentUser(user);
                 user.populateAppointments(Database.retrieveAppointments(user.getID()));
                 thisUser = user;
                 return true;

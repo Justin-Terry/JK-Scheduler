@@ -93,6 +93,9 @@ public class LoginWindow {
 //                                            badLogin.showAndWait();
                                     
                                 if (UserController.handledLogin(username, password)) {
+                                	
+                                	Main.getCurrentUser().addAppointment(new Appointment("TEST", "Public", "TEST", LocalDateTime.now(), LocalDateTime.now().plusHours(2), Main.getCurrentUser().getID()));
+                                	Main.getWindowManager().setCalendarView();
                                     window.close();
                                 }
                                 else

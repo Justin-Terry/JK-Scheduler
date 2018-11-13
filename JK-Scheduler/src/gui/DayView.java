@@ -170,7 +170,7 @@ public class DayView extends CalendarView{
 				
 				
 				startHr = startHr*2;
-				System.out.println("Sthr" + startHr);
+				System.out.println("Span " + span);
 				if(a.getStart().getMinute() < 30) {
 					AppointmentBox apb = new AppointmentBox(a);
 					appointmentsGrid.add(apb.getBox(), 1, startHr);
