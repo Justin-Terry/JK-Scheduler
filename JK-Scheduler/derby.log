@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-Tue Nov 13 11:50:57 PST 2018:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0167-0ea0-7880-000006a5a5e8 
+Tue Nov 13 12:04:28 PST 2018:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0167-0eac-d8d7-000006a6b918 
 on database directory C:\Users\Justin\git\JK-Scheduler\JK-Scheduler\SchedulerDB with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@69222c14 
 Loaded from file:/C:/Users/Justin/git/JK-Scheduler/JK-Scheduler/lib/derby.jar
 java.vendor=Oracle Corporation

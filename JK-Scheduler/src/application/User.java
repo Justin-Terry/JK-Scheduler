@@ -57,17 +57,17 @@ public class User {
 
 	public void addAppointment(Appointment appointment) {
 		if (appointment != null) appointments.add(appointment);
+		System.out.println("Added " + appointments.get(appointments.size()-1));
 	}
 
 	public void cancelAppointment(int appointmentID) {
-		System.out.println("BEFORE: " + appointments);
 		for (Appointment a : appointments) {
 			if (appointmentID == a.getAppID()) {
+				System.out.println("Deleted: " + a.getName());
 				appointments.remove(a);
 				return;
 			}
 		}
-		System.out.println("AFTER: " + appointments);
 	}
 
 //	public void changeAppointment(AppointmentForm form) {
