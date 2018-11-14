@@ -84,7 +84,7 @@ public class WindowManager {
 	}
 	
 	public void showModifyAppointment() {
-//		ModifyAppointmentWindow maw = new ModifyAppointmentWindow();
+		ChangeAppointmentWindow maw = new ChangeAppointmentWindow();
 	}
 	
 	public CalendarView getCalendarView() {
