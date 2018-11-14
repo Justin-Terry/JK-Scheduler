@@ -12,12 +12,12 @@ import java.util.HashMap;
 
 public final class Database {
     private static Connection connection = null;
-    private static String dbPath = "jdbc:derby:SchedulerDB;create=true";
+    private static String dbPath = "jdbc:derby://localhost:1527/SchedulerDB;create=true";
     private HashMap<String, String> creds = new HashMap<String, String>();//<username, password>
 
     public Database() {
-//        createUsersTable();
-//        createAppointmentsTable();
+        createUsersTable();
+        createAppointmentsTable();
         populateCredentials();
     }
     
@@ -53,7 +53,7 @@ public final class Database {
 
         }catch(SQLException e) {
             if(e.getSQLState().compareTo("X0Y32") == 0 ) {
-                System.out.println("Table already exists");
+                System.out.println("Database.createUsersTable() - Table 'Users' already exists");
             }else {
             	e.printStackTrace();
                 System.exit(0);
@@ -85,7 +85,7 @@ public final class Database {
 
         }catch(SQLException e) {
             if(e.getSQLState().compareTo("X0Y32") == 0 ) {
-                System.out.println("Table already exists");
+                System.out.println("Database.createAppointmentsTable() - Table 'Appointments' already exists");
             }else {
                 System.exit(0);
             }
@@ -96,15 +96,14 @@ public final class Database {
 	 * Obtain a connection to the database.
 	 */
 	private static final void getConnection() {
-		try {
-			// Replace with actual database implementation
-			String host = dbPath;
-			System.out.println("Creating connection to database");
-
-			connection = DriverManager.getConnection(host);
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		}
+            try {
+                    // Replace with actual database implementation
+                    String host = dbPath;
+                    System.out.println("Creating connection to database");
+                    connection = DriverManager.getConnection(host);
+            } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+            }
 	}
 
 	/**
@@ -135,7 +134,7 @@ public final class Database {
 			if (connection == null)
 				getConnection();
 
-			String query = "SELECT userid " + "FROM Users " + "WHERE userID = " + Integer.toString(userid+1);
+			String query = "SELECT userid " + "FROM Users " + "WHERE userID = " + Integer.toString(userid);
 
 			Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			ResultSet result = stmt.executeQuery(query);
@@ -160,14 +159,14 @@ public final class Database {
 			ResultSetMetaData rsmd = result.getMetaData();
 			int numOfCols = rsmd.getColumnCount();
 			if (result.next()) {
-				for (int i = 2; i <= numOfCols; i++) {
-					if(i == 4) {
-						userAL.add("");
-						userAL.add(result.getString(i));
-					}else {
-						userAL.add(result.getString(i));
-					}
-				}
+                            for (int i = 2; i <= numOfCols; i++) {
+                                if(i == 4) {
+                                        userAL.add("");
+                                        userAL.add(result.getString(i));
+                                }else {
+                                        userAL.add(result.getString(i));
+                                }
+                            }
 			}
 
 			User tempUser = new User(userAL);

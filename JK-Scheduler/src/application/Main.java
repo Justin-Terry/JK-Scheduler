@@ -20,11 +20,10 @@ public class Main extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) {
-                System.out.println(new File(".").getAbsolutePath());
+                System.out.println("Project working directory: " + new File(".").getAbsolutePath());
 		winMan = new WindowManager(primaryStage);
 		winMan.displayLogin(primaryStage);
-
-
+                winMan.setCalendarView();
 	}
 	
 	public static void main(String[] args) {

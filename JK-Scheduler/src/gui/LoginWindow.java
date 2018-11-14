@@ -19,7 +19,9 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.BoxBlur;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -31,7 +33,7 @@ public class LoginWindow {
 	Stage window;
 	Database database;
 
-	public LoginWindow(Stage mainStage) {
+	public LoginWindow(Stage mainStage, Pane parentPane) {
 		window = new Stage();
 		window.initStyle(StageStyle.UNDECORATED);
 		window.initModality(Modality.APPLICATION_MODAL);
@@ -62,6 +64,7 @@ public class LoginWindow {
 
 		grid.add(loginButton, 0, 3);
 		grid.add(newAccountButton, 1, 3);
+                
 		window.setScene(scene);
 		
 		newAccountButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -75,32 +78,17 @@ public class LoginWindow {
 				Alert badLogin = new Alert(AlertType.ERROR, "Invalid Username or Password", ButtonType.OK);
 				String username = credentials.get(0).getText();
 				String password = credentials.get(1).getText();
-				
-                                    
-//					if (Main.getUserCon().checkCredentials(username, password)) {
-//						User user = Database.getUser(username);
-//						if (user != null) {
-//							Main.setCurrentUser(user);
-//                                                        UserController.setUser(user);
-//							user.populateAppointments(Database.retrieveAppointments(user.getID()));
-//							System.out.println(Main.getCurrentUser().getfName());
-//                                                        window.close();
-//						}
-//
-//						
-//					} 
-//                                        else
-//                                            badLogin.showAndWait();
                                     
                                 if (UserController.handledLogin(username, password)) {
                                 	// Inserting test appointment into arraylist, bypasses DB
-                                	Main.getCurrentUser().addAppointment(new Appointment("TEST", "Public", "TEST", LocalDateTime.now(), LocalDateTime.now().plusHours(2), Main.getCurrentUser().getID()));
-                                	Main.getCurrentUser().addAppointment(new Appointment("TEST2", "Public", "TEST2", LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(1).plusHours(2), Main.getCurrentUser().getID()));
-                                	Main.getCurrentUser().addAppointment(new Appointment("TEST3", "Public", "TEST3", LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(3).plusHours(2), Main.getCurrentUser().getID()));
-                                	Main.getCurrentUser().addAppointment(new Appointment("TEST4", "Public", "TEST4", LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(3).plusHours(2), Main.getCurrentUser().getID()));
+//                                	Main.getCurrentUser().addAppointment(new Appointment("TEST", "Public", "TEST", LocalDateTime.now(), LocalDateTime.now().plusHours(2), Main.getCurrentUser().getID()));
+//                                	Main.getCurrentUser().addAppointment(new Appointment("TEST2", "Public", "TEST2", LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(1).plusHours(2), Main.getCurrentUser().getID()));
+//                                	Main.getCurrentUser().addAppointment(new Appointment("TEST3", "Public", "TEST3", LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(3).plusHours(2), Main.getCurrentUser().getID()));
+//                                	Main.getCurrentUser().addAppointment(new Appointment("TEST4", "Public", "TEST4", LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(3).plusHours(2), Main.getCurrentUser().getID()));
 
                                 	// Reset the calendar view to include new users appointments
-                                	Main.getWindowManager().setCalendarView();
+//                                	Main.getWindowManager().setCalendarView();
+                                    parentPane.setEffect(new BoxBlur(0,0,0));
                                     window.close();
                                 }
                                 else

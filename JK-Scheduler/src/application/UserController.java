@@ -181,11 +181,17 @@ public class UserController {
 	public static final boolean handledAppointmentCreation(AppointmentForm form) {
                 LocalDateTime start = form.getStartTime(),
                             end = form.getEndTime();
+                
+                if (!Database.findUser(thisUser.getID())) {
+                    System.out.println("UserController.handledAppointmentSubmission() - Could not find user ID: [" + thisUser.getID() + "]");
+                    return false;
+                }
 		// Time conflict with an existing appointment
-		if (Database.findAppointment(thisUser.getID(), start, end)) {
-			System.out.println("UserController.handledAppointmentSubmission() - Time conflict with existing appt.");
-			return false;
+                else if (Database.findAppointment(thisUser.getID(), start, end)) {
+                    System.out.println("UserController.handledAppointmentSubmission() - Time conflict with existing appt.");
+                    return false;
 		}
+                // End date/time before start date/time
                 else if (end.isBefore(start) || end.isEqual(start)) {
                     System.out.println("UserController.handledAppointmentSubmission() - Start date & time must be before end date & time.");
                     return false;
@@ -296,12 +302,15 @@ public class UserController {
 	}
 
 	// Put this in database interface
-	public boolean checkCredentials(String user, String attempted) {
+	public static boolean checkCredentials(String user, String attempted) {
 		String actual = Main.getDatabase().getUserCredentials(user);
-		if(attempted.compareTo(actual) == 0) {
-			return true;
-		}
-		return false;
+                
+                return attempted.equals(actual);
+                
+//		if(attempted.compareTo(actual) == 0) {
+//			return true;
+//		}
+//		return false;
 	}
 
 	// Input validation patterns

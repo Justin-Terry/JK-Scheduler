@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import application.Main;
 import application.Settings;
 import javafx.scene.Scene;
+import javafx.scene.effect.BoxBlur;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -69,7 +70,8 @@ public class WindowManager {
 	}
 	
 	public void displayLogin(Stage parentStage) {
-		LoginWindow login = new LoginWindow(parentStage);
+                bp.setEffect(new BoxBlur(3,3,10));
+		LoginWindow login = new LoginWindow(parentStage, bp);
 		login.getLoginWindow().show();
 	}
 	
@@ -104,7 +106,10 @@ public class WindowManager {
 			calendarView = new MonthView();
 			bp.setCenter(calendarView.getCalendarDisplay());
 			break;
-			
+                default:
+                        calendarView = new MonthView();
+                        bp.setCenter(calendarView.getCalendarDisplay());
+                        break;
 		}
 	}
 	

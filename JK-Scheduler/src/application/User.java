@@ -57,7 +57,7 @@ public class User {
 
 	public void addAppointment(Appointment appointment) {
 		if (appointment != null) appointments.add(appointment);
-		System.out.println("Added " + appointments.get(appointments.size()-1));
+		System.out.println("User.addAppointment() - Added " + appointments.get(appointments.size()-1));
 	}
 
 	public void cancelAppointment(int appointmentID) {
