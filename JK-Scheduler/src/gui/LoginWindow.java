@@ -50,17 +50,17 @@ public class LoginWindow {
 
         TextField uf = new TextField();
         PasswordField pf = new PasswordField();
-        
+
         grid.add(new Label("Login"), 0, 0);
         grid.add(new Label("Username"), 0, 1);
         grid.add(new Label("Password"), 0, 2);
-        
+
         grid.add(uf, 1, 1);
         grid.add(pf, 1, 2);
-        
+
         credentials.add(uf);
         credentials.add(pf);
-        
+
 //        for (int i = 0; i < fieldNames.length; i++) {
 //            grid.add(new Label(fieldNames[i]), 0, i);
 //            if (i > 0) {
@@ -75,7 +75,6 @@ public class LoginWindow {
 //                }
 //            }
 //        }
-
         grid.add(loginButton, 0, 3);
         grid.add(newAccountButton, 1, 3);
 
@@ -87,9 +86,19 @@ public class LoginWindow {
             }
         });
 
-        uf.setOnKeyPressed(event -> {if (event.getCode() == KeyCode.ENTER) {performLogin(credentials, parentPane); }});
-        pf.setOnKeyPressed(event -> {if (event.getCode() == KeyCode.ENTER) {performLogin(credentials, parentPane); }});
-        loginButton.setOnAction(event -> { performLogin(credentials, parentPane); });
+        uf.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                performLogin(credentials, parentPane);
+            }
+        });
+        pf.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                performLogin(credentials, parentPane);
+            }
+        });
+        loginButton.setOnAction(event -> {
+            performLogin(credentials, parentPane);
+        });
 
         // -- If the login window is closed so is the main window --//
         window.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -102,14 +111,14 @@ public class LoginWindow {
     public Stage getLoginWindow() {
         return window;
     }
-    
+
     private void performLogin(ArrayList<TextField> credentials, Pane pane) {
         Alert badLogin = new Alert(AlertType.ERROR, "Invalid Username or Password", ButtonType.OK);
-                String username = credentials.get(0).getText();
-                String password = credentials.get(1).getText();
+        String username = credentials.get(0).getText();
+        String password = credentials.get(1).getText();
 
-                if (UserController.handledLogin(username, password)) {
-                    // Inserting test appointment into arraylist, bypasses DB
+        if (UserController.handledLogin(username, password)) {
+            // Inserting test appointment into arraylist, bypasses DB
 
 //                                	Main.getCurrentUser().addAppointment(new Appointment("TEST", "Public", "TEST", LocalDateTime.now(), LocalDateTime.now().plusHours(2), Main.getCurrentUser().getID()));
 //                                	Main.getCurrentUser().addAppointment(new Appointment("TEST2", "Public", "TEST2", LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(1).plusHours(2), Main.getCurrentUser().getID()));
@@ -118,12 +127,13 @@ public class LoginWindow {
 //                                	for(int i = 0; i < 50; i++) {
 //                                		Main.getCurrentUser().addAppointment(new Appointment("TEST" + i, "Public", "TEST" + i, LocalDateTime.now().plusDays(i), LocalDateTime.now().plusDays(i).plusHours(2), Main.getCurrentUser().getID()));
 //                                	}
-                    // Reset the calendar view to include new users appointments
+            // Reset the calendar view to include new users appointments
 //                                	Main.getWindowManager().setCalendarView();
-                    pane.setEffect(new BoxBlur(0, 0, 0));
-                    window.close();
-                } else {
-                    badLogin.showAndWait();
-                }
+            Main.getWindowManager().setCalendarView();
+            pane.setEffect(new BoxBlur(0, 0, 0));
+            window.close();
+        } else {
+            badLogin.showAndWait();
+        }
     }
 }
