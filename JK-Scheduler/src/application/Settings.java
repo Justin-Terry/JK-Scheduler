@@ -13,7 +13,7 @@ import javafx.event.EventHandler;
 public class Settings {
 	private int numOfSettings = 4;
 	File settingsFile;
-	private String[] settings;
+	public String[] settings;
 	private String settingsLocation = "./";
 
 	public Settings() {

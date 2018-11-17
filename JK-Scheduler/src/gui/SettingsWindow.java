@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -27,6 +28,7 @@ public class SettingsWindow {
 		stage.initModality(Modality.APPLICATION_MODAL);
 		settings = Main.getSettings();
 		grid.setPadding(new Insets(20));
+                
 		MenuButton calendarRangeButton = new MenuButton("Select Calendar Range");
 		MenuItem dayRange = new MenuItem("Day");
 		MenuItem weekRange = new MenuItem("Week");
@@ -71,12 +73,15 @@ public class SettingsWindow {
 		}
 		
 		ColorPicker colorPicker = new ColorPicker();
+                colorPicker.setValue(Color.web(settings.settings[1]));
 		grid.add(colorPicker, 1, 0);
 		grid.add(calendarRangeButton, 1, 1);
 		ColorPicker textPicker = new ColorPicker();
+                textPicker.setValue(Color.web(settings.settings[2]));
 		grid.add(textPicker,1,2);
 		grid.add(new Label("Text Color"), 0, 2);
 		ColorPicker apptPicker = new ColorPicker();
+                apptPicker.setValue(Color.web(settings.settings[3]));
 		grid.add(apptPicker,1,3);
 		grid.add(new Label("Appointment Color"), 0, 3);
 		grid.add(doneButton, 0, 4);

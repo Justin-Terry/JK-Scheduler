@@ -45,7 +45,7 @@ public class LoginWindow {
         grid.setHgap(25);
         grid.setPadding(new Insets(25));
         ArrayList<TextField> credentials = new ArrayList();
-        String[] fieldNames = {"Login", "Username", "Password"};
+//        String[] fieldNames = {"Login", "Username", "Password"};
         Scene scene = new Scene(grid);
 
         TextField uf = new TextField();
