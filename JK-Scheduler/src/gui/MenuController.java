@@ -40,19 +40,17 @@ public class MenuController {
 			public void handle(final ActionEvent e) {
 				final FileChooser fileChooser = new FileChooser();
 				fileChooser.setTitle("Choose schedule file(s) to Import");
-				List<File> list = fileChooser.showOpenMultipleDialog(null);
-				if (list != null) {
-					for (File file : list) {
-						try {
-							UserController.importSchedule(file);
-						} catch (Exception ex) {
-							Logger.getLogger(
-									MenuController.class.getName()).log(
-									Level.SEVERE, null, ex
-							);
-						}
-					}
-				}
+				File file = fileChooser.showOpenDialog(null);
+				
+                                try {
+                                    UserController.importSchedule(file);
+                                } 
+                                catch (Exception ex) {
+                                        Logger.getLogger(
+                                            MenuController.class.getName()).log(
+                                            Level.SEVERE, null, ex
+                                        );
+                                }
 			}
 		});
 

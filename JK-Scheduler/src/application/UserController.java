@@ -44,6 +44,10 @@ public class UserController {
             FileWriter fw = new FileWriter(schedule);
             BufferedWriter writer = new BufferedWriter(fw);
 
+            /**
+             * Newline included at start of text file as a "hack fix,"
+             * BufferedReader/Scanner skips first line in file when reading.
+             */
             writer.write("UID=" + thisUser.getID() + "\n");
 
             for (Appointment a : thisUser.getAppointments()) {
@@ -58,22 +62,22 @@ public class UserController {
         }
     }
 
-    public static void importSchedule(File filename) {
+    public static void importSchedule(File filename) throws FileNotFoundException, IOException {
+        Scanner reader = null;
         try {
-            Scanner reader = new Scanner(filename);
-
-            if (reader.hasNextLine()) {
-                String f = reader.nextLine();
-                if (!f.matches("UID=\\d+")) {
-                    System.out.println("UserController.importSchedule() - File content format is incorrect (Expected \"UID=1234\")");
-                    return;
-                }
-
-                int created_by = Integer.parseInt(f);
-
+            reader = new Scanner(filename);
+            System.out.print("");
+            System.out.print("");
+            String ID_FIELD = reader.nextLine();
+            System.out.print("");
+            if (!ID_FIELD.matches("UID=\\d+")) {
+                System.out.println("UserController.importSchedule() - File content format is incorrect (Expected \"UID=1234\")");
+                return;
+            } else {
+                int created_by = Integer.parseInt(ID_FIELD.substring(4));
+                
                 while (reader.hasNextLine()) {
                     String eventLine = reader.nextLine();
-
                     String pattern = "Event title=(.*)? \\| Type=(Private|Public) \\| Location=(.*)? \\| Start=\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d \\| End=\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d";
                     if (!eventLine.matches(pattern)) {
                         System.out.println("UserController.importSchedule() - File format is incorrect");
@@ -97,12 +101,17 @@ public class UserController {
                     }
                 }
             }
+            reader.close();
         } catch (IllegalArgumentException e) {
-            System.out.println("UserController.exportSchedule() - probably a problem with the Appointment ctor");
+            System.out.println("UserController.importSchedule() - probably a problem with the Appointment ctor");
             System.out.println(e.getMessage());
         } catch (IOException e) {
-            System.out.print("UserController.exportSchedule() - ");
+            System.out.print("UserController.importSchedule() - ");
             e.printStackTrace();
+        } finally {
+            if (reader != null) {
+                reader.close();
+            }
         }
     }
 
@@ -224,9 +233,9 @@ public class UserController {
         if (changeThis
                 .getEndTime()
                 .isEqual(changeThis.getStartTime())
-            || changeThis
-                    .getEndTime()
-                    .isBefore(changeThis.getStartTime())) {
+                || changeThis
+                        .getEndTime()
+                        .isBefore(changeThis.getStartTime())) {
             System.out.println("UserController.handledAppointmentChange() - End time before start time");
             return false;
         }
