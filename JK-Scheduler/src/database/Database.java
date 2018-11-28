@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public final class Database {
     private static Connection connection = null;
-    private static String dbPath = "jdbc:derby:SchedulerDB;create=true";
+    private static String dbPath = "jdbc:derby://localhost:1527/SchedulerDB;create=true";
     private HashMap<String, String> creds = new HashMap<String, String>();//<username, password>
 
     public Database() {

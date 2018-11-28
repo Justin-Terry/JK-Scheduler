@@ -66,42 +66,46 @@ public class UserController {
         Scanner reader = null;
         try {
             reader = new Scanner(filename);
-            System.out.print("");
-            System.out.print("");
             String ID_FIELD = reader.nextLine();
-            System.out.print("");
             if (!ID_FIELD.matches("UID=\\d+")) {
                 System.out.println("UserController.importSchedule() - File content format is incorrect (Expected \"UID=1234\")");
                 return;
             } else {
-                int created_by = Integer.parseInt(ID_FIELD.substring(4));
+//                int created_by = Integer.parseInt(ID_FIELD.substring(4));
                 
                 while (reader.hasNextLine()) {
                     String eventLine = reader.nextLine();
-                    String pattern = "Event title=(.*)? \\| Type=(Private|Public) \\| Location=(.*)? \\| Start=\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d \\| End=\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d";
+//                    String pattern = "Event title=(.*)? \\| Type=(Private|Public) \\| Location=(.*)? \\| Start=\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d \\| End=\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d";
+                    String pattern = "Event title=.+?  [|]  Type=(Private|Public)  [|]  Location=.+?  [|]  Start=\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}[.]\\d  [|]  End=\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}[.]\\d";
                     if (!eventLine.matches(pattern)) {
                         System.out.println("UserController.importSchedule() - File format is incorrect");
                         return;
                     }
 
-                    String[] args = eventLine.split(" | ");
+                    String[] args = eventLine.split("  [|]  ");
 
                     if (args.length != 5) {
                         System.out.println("UserController.importSchedule() - Mismatched number of arguments");
                         return;
                     }
 
-                    Appointment addThis = new Appointment(args[0], args[1], args[2], convert.toLocalDateTime(args[3]), convert.toLocalDateTime(args[4]), created_by);
+                    
+                    
+                    String s = args[3].substring(6),
+                            e = args[4].substring(4);
+                    LocalDateTime start = convert.toLocalDateTime(s),
+                                end = convert.toLocalDateTime(e);
+                    
+                    AppointmentForm addThis = new AppointmentForm(args[0].substring(12), args[1].substring(5), args[2].substring(9), start, end);
 
-                    if (Database.findAppointment(thisUser.getID(), addThis.getStart(), addThis.getEnd())) {
+                    if (Database.findAppointment(thisUser.getID(), start, end)) {
                         System.out.println("UserController.importSchedule() - Appointment time conflict");
-                    } else {
-                        thisUser.addAppointment(addThis);
-                        Database.addAppointment(addThis);
+                    } 
+                    else {
+                        handledAppointmentCreation(addThis);
                     }
                 }
             }
-            reader.close();
         } catch (IllegalArgumentException e) {
             System.out.println("UserController.importSchedule() - probably a problem with the Appointment ctor");
             System.out.println(e.getMessage());
@@ -319,10 +323,10 @@ public class UserController {
             PASS = "\\w{7,20}",
             FNAME = ".+",
             LNAME = ".+",
-            PHONE = "(\\d{10})",
-            EMAIL = "\\w+@\\w\\.\\w{3}",
-            STREET = "\\d{1,5}\\s\\w.\\s(\\b\\w*\\b\\s){1,2}\\w*\\.",
-            CITY = "\\w+",
+            PHONE = "[0-9]{10}",
+            EMAIL = "\\w+@\\w+[.]\\w{3}",
+            STREET = ".+",
+            CITY = ".+",
             STATE = "[a-zA-Z][a-zA-Z ]{3,}",
             ZIP = "\\d{5}(-\\d{4})?";
 }

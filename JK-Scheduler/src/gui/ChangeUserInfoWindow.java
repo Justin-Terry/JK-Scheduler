@@ -79,29 +79,29 @@ public class ChangeUserInfoWindow {
         gp.setHalignment(submitButton, HPos.CENTER);
 
 
-//        submitButton.setOnAction(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(final ActionEvent event) {
-//                ArrayList<String> submission = new ArrayList<>();
-//
-//                for (TextField tf : textfields)
-//                    submission.add(tf.getText());
-//
-//                // Pass user submission to UserController for validation
-//                if ( UserController.handledUserInfoChange(submission) ) {
-//                    // Green checkmark
-//                }
-//                else {
-//                    // Submission error handling
-//                    Label error = new Label("Error - Invalid field(s)");
-//                    /**
-//                     * add error message below submit button;
-//                     * number of rows = all fields + submit button + error message
-//                     */
-//                    gp.add(error, 0, getNumFields() + 1 + 1);
-//                    gp.setHalignment(error, HPos.CENTER);
-//                }
-//            }
-//        });
+        submitButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(final ActionEvent event) {
+                ArrayList<String> submission = new ArrayList<>();
+
+                for (TextField tf : textfields)
+                    submission.add(tf.getText());
+
+                // Pass user submission to UserController for validation
+                if ( UserController.handledUserInfoChange(submission) ) {
+                    stage.close();
+                }
+                else {
+                    // Submission error handling
+                    Label error = new Label("Error - Invalid field(s)");
+                    /**
+                     * add error message below submit button;
+                     * number of rows = all fields + submit button + error message
+                     */
+                    gp.add(error, 0, getNumFields() + 1 + 1);
+                    gp.setHalignment(error, HPos.CENTER);
+                }
+            }
+        });
     }
 }
