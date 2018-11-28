@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public final class Database {
     private static Connection connection = null;
-    private static String dbPath = "jdbc:derby://localhost:1527/SchedulerDB;create=true";
+    private static String dbPath = "jdbc:derby:SchedulerDB;create=true";
     private HashMap<String, String> creds = new HashMap<String, String>();//<username, password>
 
     public Database() {
@@ -443,7 +443,7 @@ public final class Database {
             stmt.setString(4, convert.toTimestampFormat(appointment.getStart()));
             stmt.setString(5, convert.toTimestampFormat(appointment.getEnd()));
             stmt.setString(6, Integer.toString(appointment.getCreator()));
-            stmt.executeUpdate();
+            stmt.execute();
         } catch (SQLException e) {
             System.out.println("addAppointment() - " + e.getMessage());
         }
@@ -482,7 +482,7 @@ public final class Database {
         }
     }
 
-    public static final void cancelAppointment(int appointmentID) {
+    public static void cancelAppointment(int appointmentID) {
         try {
             if (connection == null) getConnection();
             

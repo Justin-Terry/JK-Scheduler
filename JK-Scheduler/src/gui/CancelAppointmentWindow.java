@@ -61,7 +61,6 @@ public class CancelAppointmentWindow {
 
 						Appointment appt = a;
 						Main.getCurrentUser().cancelAppointment(appt.getAppID());
-						System.out.println("Trying to cancel " + appt.getName());
 						Main.getWindowManager().setCalendarView();
 						stage.close();
 					}

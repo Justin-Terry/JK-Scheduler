@@ -64,6 +64,7 @@ public class User {
 		for (Appointment a : appointments) {
 			if (appointmentID == a.getAppID()) {
 				System.out.println("Deleted: " + a.getName());
+				Main.getDatabase().cancelAppointment(appointmentID);
 				appointments.remove(a);
 				return;
 			}
