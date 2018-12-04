@@ -61,6 +61,8 @@ public class CancelAppointmentWindow {
 
 						Appointment appt = a;
 						Main.getCurrentUser().cancelAppointment(appt.getAppID());
+						Main.getDatabase().removeNotification(appt.getNotification().getID());
+						Main.getNotifications().remove(appt.getNotification().getTime());
 						Main.getWindowManager().setCalendarView();
 						stage.close();
 					}

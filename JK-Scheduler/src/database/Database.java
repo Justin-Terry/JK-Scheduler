@@ -1,6 +1,8 @@
 package database;
 
 import application.Appointment;
+import application.EmailNotification;
+import application.Main;
 import application.User;
 import application.convert;
 import static java.lang.System.exit;
@@ -11,104 +13,136 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public final class Database {
-    private static Connection connection = null;
-    private static String dbPath = "jdbc:derby://localhost:1527/SchedulerDB;create=true";
-    private HashMap<String, String> creds = new HashMap<String, String>();//<username, password>
+	private static Connection connection = null;
+	private static String dbPath = "jdbc:derby:SchedulerDB;create=true";
+	private HashMap<String, String> creds = new HashMap<String, String>();// <username, password>
 
-    public Database() {
-        createUsersTable();
-        createAppointmentsTable();
-        populateCredentials();
-    }
-    
-    private static final void createUsersTable() {
-        try {
-            if(connection == null) {
-                getConnection();
-            }
+	public Database() {
+		createUsersTable();
+		createAppointmentsTable();
+		createNotificationsTable();
+		populateCredentials();
+		populateNotifications();
+	}
 
-            String str = 
-                    "CREATE TABLE Users (\n" +
-                    "    userid      INT \n" +
-                    "                GENERATED ALWAYS AS IDENTITY \n" +
-                    "                NOT NULL ,\n" +
-                    "    username    VARCHAR(255) NOT NULL,\n" +
-                    "    password    VARCHAR(255) NOT NULL,\n" +
-                    "    fname       VARCHAR(255) NOT NULL,\n" +
-                    "    lname       VARCHAR(255) NOT NULL,\n" +
-                    "    phone       VARCHAR(255) NOT NULL,\n" +
-                    "    email       VARCHAR(255) NOT NULL,\n" +
-                    "    street      VARCHAR(255) NOT NULL,\n" +
-                    "    city        VARCHAR(255) NOT NULL,\n" +
-                    "    state       VARCHAR(255) NOT NULL,\n" +
-                    "    zipcode     INT NOT NULL,\n" +
-                    "\n" +
-                    "    CONSTRAINT userPK PRIMARY KEY(userid),\n" +
-                    "    CONSTRAINT userCK UNIQUE(email),\n" +
-                    "    CONSTRAINT userCK2 UNIQUE(phone)\n" +
-                    " )";
+	private static final void createUsersTable() {
+		try {
+			if (connection == null) {
+				getConnection();
+			}
 
-            Statement stmt = connection.createStatement();
-            stmt.execute(str);
+			String str = "CREATE TABLE Users (\n" + "    userid      INT \n"
+					+ "                GENERATED ALWAYS AS IDENTITY \n" + "                NOT NULL ,\n"
+					+ "    username    VARCHAR(255) NOT NULL,\n" + "    password    VARCHAR(255) NOT NULL,\n"
+					+ "    fname       VARCHAR(255) NOT NULL,\n" + "    lname       VARCHAR(255) NOT NULL,\n"
+					+ "    phone       VARCHAR(255) NOT NULL,\n" + "    email       VARCHAR(255) NOT NULL,\n"
+					+ "    street      VARCHAR(255) NOT NULL,\n" + "    city        VARCHAR(255) NOT NULL,\n"
+					+ "    state       VARCHAR(255) NOT NULL,\n" + "    zipcode     INT NOT NULL,\n" + "\n"
+					+ "    CONSTRAINT userPK PRIMARY KEY(userid),\n" + "    CONSTRAINT userCK UNIQUE(email),\n"
+					+ "    CONSTRAINT userCK2 UNIQUE(phone)\n" + " )";
 
-        }catch(SQLException e) {
-            if(e.getSQLState().compareTo("X0Y32") == 0 ) {
-                System.out.println("Database.createUsersTable() - Table 'Users' already exists");
-            }else {
-            	e.printStackTrace();
-                System.exit(0);
-            }
-        }
-    }
+			Statement stmt = connection.createStatement();
+			stmt.execute(str);
 
-    // Untested
-    private static final void createAppointmentsTable() {
-        try {
-            if(connection == null) getConnection();
+		} catch (SQLException e) {
+			if (e.getSQLState().compareTo("X0Y32") == 0) {
+				System.out.println("Database.createUsersTable() - Table 'Users' already exists");
+			} else {
+				e.printStackTrace();
+				System.exit(0);
+			}
+		}
+	}
 
-            String str =
-                    "CREATE TABLE Appointments (\n" +
-                    "    app_id      INT GENERATED ALWAYS AS IDENTITY,\n" +
-                    "    name        VARCHAR(255) NOT NULL,\n" +
-                    "    type        VARCHAR(255) NOT NULL,\n" +
-                    "    location    VARCHAR(255) NOT NULL,\n" +
-                    "    start_time  TIMESTAMP NOT NULL,\n" +
-                    "    end_time    TIMESTAMP NOT NULL,\n" +
-                    "    created_by  INT NOT NULL,\n" +
-                    "\n" +
-                    "    PRIMARY KEY(app_id),\n" +
-                    "    FOREIGN KEY(created_by) REFERENCES Users(userid)\n" +
-                    ")";
+	// Untested
+	private static final void createAppointmentsTable() {
+		try {
+			if (connection == null)
+				getConnection();
 
-            Statement stmt = connection.createStatement();
-            stmt.execute(str);
+			String str = "CREATE TABLE Appointments (\n" + "    app_id      INT GENERATED ALWAYS AS IDENTITY,\n"
+					+ "    name        VARCHAR(255) NOT NULL,\n" + "    type        VARCHAR(255) NOT NULL,\n"
+					+ "    location    VARCHAR(255) NOT NULL,\n" + "    start_time  TIMESTAMP NOT NULL,\n"
+					+ "    end_time    TIMESTAMP NOT NULL,\n" + "    created_by  INT NOT NULL,\n" + "\n"
+					+ "    PRIMARY KEY(app_id),\n" + "    FOREIGN KEY(created_by) REFERENCES Users(userid)\n" + ")";
 
-        }catch(SQLException e) {
-            if(e.getSQLState().compareTo("X0Y32") == 0 ) {
-                System.out.println("Database.createAppointmentsTable() - Table 'Appointments' already exists");
-            }else {
-                System.exit(0);
-            }
-        }
-    }
+			Statement stmt = connection.createStatement();
+			stmt.execute(str);
+
+		} catch (SQLException e) {
+			if (e.getSQLState().compareTo("X0Y32") == 0) {
+				System.out.println("Database.createAppointmentsTable() - Table 'Appointments' already exists");
+			} else {
+				System.exit(0);
+			}
+		}
+	}
+
+	private static final void createNotificationsTable() {
+		try {
+			if (connection == null) {
+				getConnection();
+			}
+
+			String str = "CREATE TABLE Notifications (" + "not_Id INT GENERATED ALWAYS AS IDENTITY,\n"
+					+ "not_Time TIMESTAMP NOT NULL,\n" + "not_To VARCHAR(255) NOT NULL, \n"
+					+ "not_Sub VARCHAR(120) NOT NULL, \n" + "not_Mes VARCHAR(500) NOT NULL, \n" + "PRIMARY KEY(not_Id)"
+					+ ")";
+
+			Statement stmt = connection.createStatement();
+			stmt.execute(str);
+
+		} catch (SQLException e) {
+			if (e.getSQLState().compareTo("X0Y32") == 0) {
+				System.out.println("Database.createNotificationsTable() - Table 'Notifications' already exists");
+			} else {
+				e.printStackTrace();
+				System.exit(0);
+			}
+		}
+	}
+
+	public static final void addNotification(EmailNotification noti) {
+		try {
+			if (connection == null) {
+				getConnection();
+			}
+
+			PreparedStatement stmt = connection.prepareStatement(
+					"INSERT INTO Notifications (not_Time, not_To, not_Sub, not_Mes) " + "VALUES (?, ?, ?, ?)",
+					Statement.RETURN_GENERATED_KEYS);
+			stmt.setString(1, convert.toTimestampFormat(noti.getTime()));
+			stmt.setString(2, noti.getToEmail());
+			stmt.setString(3, noti.getSub());
+			stmt.setString(4, noti.getMes());
+			stmt.execute();
+			ResultSet rs = stmt.getGeneratedKeys();
+			rs.next();
+			noti.setID(rs.getInt(1));
+		} catch (SQLException e) {
+			System.out.println("addNotification() - " + e.getMessage());
+		}
+	}
 
 	/**
 	 * Obtain a connection to the database.
 	 */
 	private static final void getConnection() {
-            try {
-                    // Replace with actual database implementation
-                    String host = dbPath;
-                    System.out.println("Creating connection to database");
-                    connection = DriverManager.getConnection(host);
-            } catch (SQLException e) {
-                    System.out.println(e.getMessage());
-            }
+		try {
+			// Replace with actual database implementation
+			String host = dbPath;
+			System.out.println("Creating connection to database");
+			connection = DriverManager.getConnection(host);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
 	/**
 	 * Find the user in the database
-	 * @param username - The username of the user to find
+	 * 
+	 * @param username
+	 *            - The username of the user to find
 	 * @return - Whether or not the action was successful
 	 */
 	public static final boolean findUser(String username) {
@@ -159,14 +193,14 @@ public final class Database {
 			ResultSetMetaData rsmd = result.getMetaData();
 			int numOfCols = rsmd.getColumnCount();
 			if (result.next()) {
-                            for (int i = 2; i <= numOfCols; i++) {
-                                if(i == 4) {
-                                        userAL.add("");
-                                        userAL.add(result.getString(i));
-                                }else {
-                                        userAL.add(result.getString(i));
-                                }
-                            }
+				for (int i = 2; i <= numOfCols; i++) {
+					if (i == 4) {
+						userAL.add("");
+						userAL.add(result.getString(i));
+					} else {
+						userAL.add(result.getString(i));
+					}
+				}
 			}
 
 			User tempUser = new User(userAL);
@@ -176,6 +210,44 @@ public final class Database {
 			e.getErrorCode();
 		}
 		return null;
+	}
+
+	public final void populateNotifications() {
+		try {
+			if (connection == null) {
+				getConnection();
+			}
+
+			String query = "SELECT * FROM Notifications";
+			Statement stmt = connection.createStatement();
+			ResultSet result = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = result.getMetaData();
+			int numOfCols = rsmd.getColumnCount();
+
+			while (result.next()) {
+				int id = result.getInt(1);
+				LocalDateTime time = convert.toLocalDateTime(result.getString(2));
+				String toEmail = result.getString(3);
+				String sub = result.getString(4);
+				String mes = result.getString(5);
+				if (time.isAfter(LocalDateTime.now())) {
+					EmailNotification noti = new EmailNotification(sub, mes, toEmail, time);
+					noti.setID(id);
+					Main.getNotifications().put(time, noti);
+				}else {
+					EmailNotification noti = new EmailNotification(sub, mes, toEmail, time);
+					noti.setID(id);
+					try {
+						noti.sendNotification();
+						removeNotification(noti.getID());
+					}catch(Exception e) {};
+					
+					
+				}
+			}
+		} catch (SQLException e) {
+			e.getErrorCode();
+		}
 	}
 
 	public final void populateCredentials() {
@@ -207,7 +279,9 @@ public final class Database {
 	// Unfinished
 	/**
 	 * Return the User ID of the user
-	 * @param username - The user to search for
+	 * 
+	 * @param username
+	 *            - The user to search for
 	 * @return - The User ID
 	 */
 	public static final int getUserID(String username) {
@@ -219,36 +293,33 @@ public final class Database {
 
 			String query = "SELECT userid " + "FROM Users " + "WHERE username = \'" + username + "\'";
 
-			PreparedStatement stmt = 
-                                connection.prepareStatement(
-                                        "SELECT userid FROM users WHERE username = ?",
-                                        ResultSet.TYPE_SCROLL_INSENSITIVE, 
-                                        ResultSet.CONCUR_READ_ONLY);
-                        stmt.setString(1, username);
+			PreparedStatement stmt = connection.prepareStatement("SELECT userid FROM users WHERE username = ?",
+					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			stmt.setString(1, username);
 			ResultSet result = stmt.executeQuery();
 
-                        
 			// Need to check for correctness
-                        result.last();
-                        if (result.getRow() == 0) {
-                            System.out.println("Database.getUserID() - No user ID found for this username");
-                            return -1;
-                        }
-                        else if (result.getRow() > 1) {
-                            System.out.println("Database.getUserID() - Multiple user IDs found for this username");
-                            return -1;
-                        }
-                        else
-                            return Integer.parseInt(result.getString("USERID"));
+			result.last();
+			if (result.getRow() == 0) {
+				System.out.println("Database.getUserID() - No user ID found for this username");
+				return -1;
+			} else if (result.getRow() > 1) {
+				System.out.println("Database.getUserID() - Multiple user IDs found for this username");
+				return -1;
+			} else
+				return Integer.parseInt(result.getString("USERID"));
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
-                        return -1;
+			return -1;
 		}
 	}
+	
 
 	/**
 	 * Add a new user to the database. UserID is auto-generated.
-	 * @param user - The user to add
+	 * 
+	 * @param user
+	 *            - The user to add
 	 */
 	public static final void addUser(User user) {
 		try {
@@ -278,8 +349,11 @@ public final class Database {
 
 	/**
 	 * Change the username of the user in the database
-	 * @param user - The user to change names
-	 * @param newName - The new name the user wants to change to
+	 * 
+	 * @param user
+	 *            - The user to change names
+	 * @param newName
+	 *            - The new name the user wants to change to
 	 */
 	public static final void changeUsername(User user, String newName) {
 		try {
@@ -289,7 +363,7 @@ public final class Database {
 			assert (findUser(user.getUsername()));
 
 			String namechange = "UPDATE users SET username = \'" + newName + "\' WHERE username = \'"
-					+ user.getUsername()+"\'";
+					+ user.getUsername() + "\'";
 
 			PreparedStatement stmt = connection.prepareStatement(namechange);
 			stmt.executeUpdate();
@@ -301,268 +375,260 @@ public final class Database {
 
 	/**
 	 * Change the password of the user in the database
-	 * @param user - The user to change passwords
-	 * @param newPass - The new password the user wants to change to
+	 * 
+	 * @param user
+	 *            - The user to change passwords
+	 * @param newPass
+	 *            - The new password the user wants to change to
 	 */
 	public static final void changePassword(User user, String newPass) {
-            try {
-                    if (connection == null)
-                            getConnection();
+		try {
+			if (connection == null)
+				getConnection();
 
-                    assert (findUser(user.getUsername()));
+			assert (findUser(user.getUsername()));
 
-                    String passchange = "UPDATE users SET password = \'" + newPass + "\' WHERE username = \'"
-                                    + user.getUsername() + "\'"; /** DO NOT DO THIS **/
+			String passchange = "UPDATE users SET password = \'" + newPass + "\' WHERE username = \'"
+					+ user.getUsername() + "\'"; /** DO NOT DO THIS **/
 
+			PreparedStatement stmt = connection.prepareStatement(passchange);
+			stmt.executeUpdate();
+			user.setPassword(newPass);
+		} catch (SQLException e) {
 
-                    PreparedStatement stmt = connection.prepareStatement(passchange);
-                    stmt.executeUpdate();
-                    user.setPassword(newPass);
-            } catch (SQLException e) {
-
-                    System.out.println(e.getMessage());
-            }
+			System.out.println(e.getMessage());
+		}
 	}
 
 	/**
 	 * Checks if new appointment conflicts with an existing appointment's timeslot
-	 * @param userid - The user's ID
-	 * @param newStart - The new appointment's start
-	 * @param newEnd - The new appointment's end
+	 * 
+	 * @param userid
+	 *            - The user's ID
+	 * @param newStart
+	 *            - The new appointment's start
+	 * @param newEnd
+	 *            - The new appointment's end
 	 * @return - Whether or not the user has an appointment in conflict
 	 */
 	public static final boolean findAppointment(int userid, LocalDateTime newStart, LocalDateTime newEnd) {
-            try {
-                if (connection == null) getConnection();
+		try {
+			if (connection == null)
+				getConnection();
 
-                if (!findUser(userid)) return false;
-                
-                String startTime = convert.toTimestampFormat(newStart),
-                        endTime = convert.toTimestampFormat(newEnd);
+			if (!findUser(userid))
+				return false;
 
-              
-                String query = String.format(
-                            "SELECT COUNT(*) AS rowcount \n" +
-                            "FROM Appointments INNER JOIN Users\n" +
-                            "ON Appointments.created_by = Users.userid \n" +
-                            "WHERE ('%s' > Appointments.start_time AND '%s' < Appointments.end_time) \n" +
-                            "OR ('%s' > Appointments.start_time AND '%s' < Appointments.end_time) \n" +
-                            "OR ('%s' < Appointments.start_time AND '%s' > Appointments.end_time) \n" +
-                            "GROUP BY created_by\n" +
-                            "HAVING created_by = %d",
-                            startTime, startTime, 
-                            endTime, endTime, 
-                            startTime, endTime, 
-                            userid
-                        );
+			String startTime = convert.toTimestampFormat(newStart), endTime = convert.toTimestampFormat(newEnd);
 
-                Statement stmt = connection.createStatement();
-                ResultSet result = stmt.executeQuery(query);
-                int count = 0;
-                if ( result.next() ) count = result.getInt("rowcount");
-                
-                if (count > 1)
-                   System.out.println("findAppoint() - database contains more than 1 appointment in this timeslot");
-                
-                result.close();
-                return count >= 1;
-            } 
-            catch (SQLException e) {
-                System.out.println("findAppointment() - " + e.getMessage());
-                return true;
-            }
+			String query = String.format(
+					"SELECT COUNT(*) AS rowcount \n" + "FROM Appointments INNER JOIN Users\n"
+							+ "ON Appointments.created_by = Users.userid \n"
+							+ "WHERE ('%s' > Appointments.start_time AND '%s' < Appointments.end_time) \n"
+							+ "OR ('%s' > Appointments.start_time AND '%s' < Appointments.end_time) \n"
+							+ "OR ('%s' < Appointments.start_time AND '%s' > Appointments.end_time) \n"
+							+ "GROUP BY created_by\n" + "HAVING created_by = %d",
+					startTime, startTime, endTime, endTime, startTime, endTime, userid);
+
+			Statement stmt = connection.createStatement();
+			ResultSet result = stmt.executeQuery(query);
+			int count = 0;
+			if (result.next())
+				count = result.getInt("rowcount");
+
+			if (count > 1)
+				System.out.println("findAppoint() - database contains more than 1 appointment in this timeslot");
+
+			result.close();
+			return count >= 1;
+		} catch (SQLException e) {
+			System.out.println("findAppointment() - " + e.getMessage());
+			return true;
+		}
 	}
 
-    public static final int getAppID(int userid, LocalDateTime newStart, LocalDateTime newEnd) {
-        int id = -1;
-        try {
-            if (connection == null) 
-                getConnection();
+	public static final int getAppID(int userid, LocalDateTime newStart, LocalDateTime newEnd) {
+		int id = -1;
+		try {
+			if (connection == null)
+				getConnection();
 
-            if (!findUser(userid)) {
-                System.out.println("Database.getAppID() - User ID not found.");
-                return id;
-            }
-                
-            String startTime = convert.toTimestampFormat(newStart),
-                    endTime = convert.toTimestampFormat(newEnd);
+			if (!findUser(userid)) {
+				System.out.println("Database.getAppID() - User ID not found.");
+				return id;
+			}
 
-            String query = 
-                    "SELECT app_id FROM Appointments INNER JOIN Users \n" +
-                    "ON Appointments.created_by = Users.userid \n" +
-                    "WHERE Appointments.start_time = ? \n" +
-                    "AND Appointments.end_time = ? \n";
-            
-            PreparedStatement stmt = 
-                    connection.prepareStatement(query, 
-                                                ResultSet.TYPE_SCROLL_INSENSITIVE, 
-                                                ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, startTime);
-            stmt.setString(2, endTime);
-            
-            ResultSet result = stmt.executeQuery();
-            
-            if (result.next()) {
-                id = result.getInt("app_id");
-                System.out.println("Database.getAppID() - New appointment with ID: " + id + ".");
-            }
-            else {
-                System.out.println("Database.getAppID() - Appointment for this start & end not found.");
-            }
-        } 
-        catch (SQLException e) {
-            System.out.println("Database.getAppID() - " + e.getMessage());
-        }
-        finally {
-            return id;
-        }
-    }
-        
-    /**
-     * Add a new appointment to the database
-     * @param appointment - The appointment to add
-     */
-    public static final void addAppointment(Appointment appointment) {
-        try {
-            if (connection == null) {
-                getConnection();
-            }
+			String startTime = convert.toTimestampFormat(newStart), endTime = convert.toTimestampFormat(newEnd);
 
-            if (!findUser(appointment.getCreator())) {
-                System.out.println("Database.addAppointment() - could not find user");
-                return;
-            }
+			String query = "SELECT app_id FROM Appointments INNER JOIN Users \n"
+					+ "ON Appointments.created_by = Users.userid \n" + "WHERE Appointments.start_time = ? \n"
+					+ "AND Appointments.end_time = ? \n";
 
-            PreparedStatement stmt = connection.prepareStatement(
-                    "INSERT INTO Appointments (name, type, location, start_time, end_time, created_by) "
-                    + "VALUES (?, ?, ?, ?, ?, ?)"
-            );
-            stmt.setString(1, appointment.getName());
-            stmt.setString(2, appointment.getType());
-            stmt.setString(3, appointment.getLocation());
-            stmt.setString(4, convert.toTimestampFormat(appointment.getStart()));
-            stmt.setString(5, convert.toTimestampFormat(appointment.getEnd()));
-            stmt.setString(6, Integer.toString(appointment.getCreator()));
-            stmt.execute();
-        } catch (SQLException e) {
-            System.out.println("addAppointment() - " + e.getMessage());
-        }
-    }
-	
-    /**
-     * Change an existing appointment
-     * @param app_id - The appointment ID in the database
-     * @param appointment - The new appointment changes (as an object)
-     */
-    public static final void changeAppointment(int app_id, Appointment appointment) {
-        try {
-            if (connection == null) getConnection();
+			PreparedStatement stmt = connection.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_READ_ONLY);
+			stmt.setString(1, startTime);
+			stmt.setString(2, endTime);
 
-            if (!findUser(appointment.getCreator())) {
-                    System.out.println("changeAppointment() - could not find user");
-                    return;
-                }
-            
-            PreparedStatement stmt = connection.prepareStatement(
-                            "UPDATE Appointments \n" +
-                            "SET name = ?, type = ?, location = ?, start_time = ?, end_time = ? \n" +
-                            "WHERE app_id = ?"
-            );
-            stmt.setString(1, appointment.getName());
-            stmt.setString(2, appointment.getType());
-            stmt.setString(3, appointment.getLocation());
-            stmt.setString(4, convert.toTimestampFormat(appointment.getStart()));
-            stmt.setString(5, convert.toTimestampFormat(appointment.getEnd()));
-            stmt.setString(6, Integer.toString(app_id));
+			ResultSet result = stmt.executeQuery();
 
-            stmt.executeUpdate();
-        }
-        catch (SQLException e) {
-            System.out.println("changeAppointment() - " + e.getMessage());
-        }
-    }
+			if (result.next()) {
+				id = result.getInt("app_id");
+				System.out.println("Database.getAppID() - New appointment with ID: " + id + ".");
+			} else {
+				System.out.println("Database.getAppID() - Appointment for this start & end not found.");
+			}
+		} catch (SQLException e) {
+			System.out.println("Database.getAppID() - " + e.getMessage());
+		} finally {
+			return id;
+		}
+	}
 
-    public static void cancelAppointment(int appointmentID) {
-        try {
-            if (connection == null) getConnection();
-            
-            PreparedStatement stmt = connection.prepareStatement(
-                    "DELETE FROM Appointments " +
-                    "WHERE app_id = " + appointmentID);
+	/**
+	 * Add a new appointment to the database
+	 * 
+	 * @param appointment
+	 *            - The appointment to add
+	 */
+	public static final void addAppointment(Appointment appointment) {
+		try {
+			if (connection == null) {
+				getConnection();
+			}
 
-            stmt.executeUpdate();
-        } 
-        catch (SQLException e) {
-            System.out.println("cancelAppointment() - " + e.getMessage());
-        }
-    }
+			if (!findUser(appointment.getCreator())) {
+				System.out.println("Database.addAppointment() - could not find user");
+				return;
+			}
 
-    // Untested
-    public static final ArrayList<Appointment> retrieveAppointments(int userid) {
-        ArrayList<Appointment> appointments = new ArrayList<>();
-        int rowCount = 0;
-            try {
-                if (connection == null)
-                    getConnection();
+			PreparedStatement stmt = connection.prepareStatement(
+					"INSERT INTO Appointments (name, type, location, start_time, end_time, created_by) "
+							+ "VALUES (?, ?, ?, ?, ?, ?)");
+			stmt.setString(1, appointment.getName());
+			stmt.setString(2, appointment.getType());
+			stmt.setString(3, appointment.getLocation());
+			stmt.setString(4, convert.toTimestampFormat(appointment.getStart()));
+			stmt.setString(5, convert.toTimestampFormat(appointment.getEnd()));
+			stmt.setString(6, Integer.toString(appointment.getCreator()));
+			stmt.execute();
+			addNotification(appointment.createNotification());
+		} catch (SQLException e) {
+			System.out.println("addAppointment() - " + e.getMessage());
+		}
+	}
 
-            String query = 
-                    "SELECT * \n" + 
-                    "FROM Appointments INNER JOIN Users \n" +
-                    "ON created_by = userid \n" +
-                    "WHERE created_by = " + userid;
+	/**
+	 * Change an existing appointment
+	 * 
+	 * @param app_id
+	 *            - The appointment ID in the database
+	 * @param appointment
+	 *            - The new appointment changes (as an object)
+	 */
+	public static final void changeAppointment(int app_id, Appointment appointment) {
+		try {
+			if (connection == null)
+				getConnection();
 
-            Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
+			if (!findUser(appointment.getCreator())) {
+				System.out.println("changeAppointment() - could not find user");
+				return;
+			}
 
-            if (rs.next()) {
-                ResultSetMetaData rsmd = rs.getMetaData();
-                int numCols = rsmd.getColumnCount();
+			PreparedStatement stmt = connection.prepareStatement("UPDATE Appointments \n"
+					+ "SET name = ?, type = ?, location = ?, start_time = ?, end_time = ? \n" + "WHERE app_id = ?");
+			stmt.setString(1, appointment.getName());
+			stmt.setString(2, appointment.getType());
+			stmt.setString(3, appointment.getLocation());
+			stmt.setString(4, convert.toTimestampFormat(appointment.getStart()));
+			stmt.setString(5, convert.toTimestampFormat(appointment.getEnd()));
+			stmt.setString(6, Integer.toString(app_id));
 
-                do {
-                    rowCount++;
-                    Appointment a = new Appointment(
-                                    rs.getString("name"),
-                                    rs.getString("type"),
-                                    rs.getString("location"),
-                                    convert.toLocalDateTime(rs.getString("start_time")),
-                                    convert.toLocalDateTime(rs.getString("end_time")),
-                                    userid
-                            );
-                    a.setAppID(rs.getInt("app_id"));
-                    appointments.add(a);
-                } while (rs.next());
-            }
-            }
-         catch (SQLException e) {
-            System.out.println("Datebase.retrieveAppointments() - " + e.getMessage());
-        }
-        System.out.printf("\nDatabase.retrieveAppointments() - Query returned "+rowCount+" results.\n");
-        return appointments;
-    }
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("changeAppointment() - " + e.getMessage());
+		}
+	}
+
+	public static void cancelAppointment(int appointmentID) {
+		try {
+			if (connection == null)
+				getConnection();
+
+			PreparedStatement stmt = connection
+					.prepareStatement("DELETE FROM Appointments " + "WHERE app_id = " + appointmentID);
+
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("cancelAppointment() - " + e.getMessage());
+		}
+	}
+
+	public static void removeNotification(int notificationId) {
+		try {
+			if (connection == null)
+				getConnection();
+
+			PreparedStatement stmt = connection
+					.prepareStatement("DELETE FROM Notifications " + "WHERE not_Id = " + notificationId);
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("removeNotification() - " + e.getMessage());
+		}
+	}
+
+	// Untested
+	public static final ArrayList<Appointment> retrieveAppointments(int userid) {
+		ArrayList<Appointment> appointments = new ArrayList<>();
+		int rowCount = 0;
+		try {
+			if (connection == null)
+				getConnection();
+
+			String query = "SELECT * \n" + "FROM Appointments INNER JOIN Users \n" + "ON created_by = userid \n"
+					+ "WHERE created_by = " + userid;
+
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+
+			if (rs.next()) {
+				ResultSetMetaData rsmd = rs.getMetaData();
+				int numCols = rsmd.getColumnCount();
+
+				do {
+					rowCount++;
+					Appointment a = new Appointment(rs.getString("name"), rs.getString("type"),
+							rs.getString("location"), convert.toLocalDateTime(rs.getString("start_time")),
+							convert.toLocalDateTime(rs.getString("end_time")), userid);
+					a.setAppID(rs.getInt("app_id"));
+					appointments.add(a);
+				} while (rs.next());
+			}
+		} catch (SQLException e) {
+			System.out.println("Datebase.retrieveAppointments() - " + e.getMessage());
+		}
+		System.out.printf("\nDatabase.retrieveAppointments() - Query returned " + rowCount + " results.\n");
+		return appointments;
+	}
 
 	// Unfinished
 	public static void changeUserInfo(User user, ArrayList<String> args) {
-		 try {
-		 if (connection == null)
-		 getConnection();
+		try {
+			if (connection == null)
+				getConnection();
 
-		 String passchange =
-				 String.format(
-					"UPDATE Users " +
-					"SET fname = %s, lname = %s, " +
-					 "phone = %s, email = %s, " +
-					 "street = %s, city = %s, state = %s, zipcode = %s " +
-					 "WHERE username = ");
+			String passchange = String
+					.format("UPDATE Users " + "SET fname = %s, lname = %s, " + "phone = %s, email = %s, "
+							+ "street = %s, city = %s, state = %s, zipcode = %s " + "WHERE username = ");
 
-		 PreparedStatement stmt = connection.prepareStatement(passchange);
-		 stmt.executeUpdate();
-		 }
-		 catch (SQLException e) {
-		 	System.out.println(e.getMessage());
-		 }
+			PreparedStatement stmt = connection.prepareStatement(passchange);
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
-    public static void main(String[] args) {
-        System.out.println("Done");
-    }
+	public static void main(String[] args) {
+		System.out.println("Done");
+	}
 }

@@ -2,12 +2,16 @@ package application;
 
 import java.time.LocalDateTime;
 
+import database.Database;
+
 public class Appointment {
     private String name;
+    private EmailNotification notification;
     private String type;
     private String location;
     private LocalDateTime start_time;
     private LocalDateTime end_time;
+    private LocalDateTime notification_time;
     private int app_id;
     private int created_by;
     private User createdBy;
@@ -18,7 +22,9 @@ public class Appointment {
         this.location = location;
         this.start_time = start;
         this.end_time = end;
-        this.created_by = userid;
+        this.created_by = userid;    
+        //-- This needs to be set programmatically
+        this.notification_time = start_time.minusMinutes(1);
     }
 
     public Appointment(AppointmentForm form, int userid) {
@@ -28,6 +34,9 @@ public class Appointment {
             this.start_time = form.getStartTime();
             this.end_time = form.getEndTime();
             this.created_by = userid;
+            //-- This needs to be set programmatically
+            this.notification_time = start_time.minusMinutes(1);
+            
     }
 
     public void modify(AppointmentForm form) {
@@ -36,6 +45,28 @@ public class Appointment {
             this.location = form.getLocation();
             this.start_time = form.getStartTime();
             this.end_time = form.getEndTime();
+    }
+    
+    public EmailNotification createNotification() {
+    	String sub = "Email Notification for: " + name;
+    	String message = String.join(
+        	    System.getProperty("line.separator"),
+        	    "<h2><strong>Event Reminder</h2>",
+        	    "<p>This email is to remind you of an upcoming event in your schedule.</p>",
+        	    "<p>Event Name: " + name + "</p>",
+        	    "<p>Event Type: " + type + "</p>",
+        	    "<p>Event Location: " + location + "</p>",
+        	    "<p>Event Time: " + start_time.getHour() + ":" + start_time.getMinute() + "</p>",
+        	    "<p>Event Date: " + start_time.getMonth() + " " + start_time.getDayOfMonth() + ", " + start_time.getYear() + "</p>"
+        	);
+    	
+    	//-- NEED TO REPLACE MY EMAIL ADDRESS WITH USER EMAIL
+    	notification = new EmailNotification(sub, message, "z400jt61@gmail.com", notification_time);
+    	return notification;
+    }
+    
+    public EmailNotification getNotification() {
+    	return notification;
     }
 
     public String getName() {
