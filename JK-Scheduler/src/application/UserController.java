@@ -122,7 +122,8 @@ public class UserController {
     public static final boolean handledLogin(String username, String password) {
         if (checkCredentials(username, password)) {
             int id = Database.getUserID(username);
-            User user = new User(username, id);
+            User user = Database.getUser(username);
+            user.setID(id); // hack fix
             Main.setCurrentUser(user);
             user.populateAppointments(Database.retrieveAppointments(user.getID()));
             thisUser = user;
@@ -243,7 +244,10 @@ public class UserController {
             System.out.println("UserController.handledAppointmentChange() - End time before start time");
             return false;
         }
-
+        else if (Database.findAppointment(thisUser.getID(), changeThis.getStartTime(), changeThis.getEndTime())) {
+            System.out.println("UserController.handledAppointmentChange() - Time conflicts with existing appointment");
+            return false;
+        }
         for (Appointment a : thisUser.getAppointments()) {
             int existingID = a.getAppID();
             if (existingID == app_id) {

@@ -336,28 +336,40 @@ public final class Database {
                 if (connection == null) getConnection();
 
                 if (!findUser(userid)) return false;
-                
-                String startTime = convert.toTimestampFormat(newStart),
-                        endTime = convert.toTimestampFormat(newEnd);
-
               
                 String query = String.format(
                             "SELECT COUNT(*) AS rowcount \n" +
-                            "FROM Appointments INNER JOIN Users\n" +
+                            "FROM Appointments INNER JOIN Users \n" +
                             "ON Appointments.created_by = Users.userid \n" +
-                            "WHERE ('%s' > Appointments.start_time AND '%s' < Appointments.end_time) \n" +
-                            "OR ('%s' > Appointments.start_time AND '%s' < Appointments.end_time) \n" +
-                            "OR ('%s' < Appointments.start_time AND '%s' > Appointments.end_time) \n" +
-                            "GROUP BY created_by\n" +
-                            "HAVING created_by = %d",
-                            startTime, startTime, 
-                            endTime, endTime, 
-                            startTime, endTime, 
-                            userid
+                            "WHERE ('?' >= Appointments.start_time AND '?' <= Appointments.end_time) \n" +
+                            "OR ('?' >= Appointments.start_time AND '?' <= Appointments.end_time) \n" +
+                            "OR ('?' <= Appointments.start_time AND '?' >= Appointments.end_time) \n" +
+                            "GROUP BY created_by \n" +
+                            "HAVING created_by = ?"
                         );
-
-                Statement stmt = connection.createStatement();
-                ResultSet result = stmt.executeQuery(query);
+                
+                PreparedStatement stmt = 
+                    connection.prepareStatement("SELECT COUNT(*) AS rowcount \n" +
+                            "FROM Appointments INNER JOIN Users \n" +
+                            "ON Appointments.created_by = Users.userid \n" +
+                            "WHERE (? >= Appointments.start_time AND ? <= Appointments.end_time) \n" +
+                            "OR (? >= Appointments.start_time AND ? <= Appointments.end_time) \n" +
+                            "OR (? <= Appointments.start_time AND ? >= Appointments.end_time) \n" +
+                            "GROUP BY created_by \n" +
+                            "HAVING created_by = ?");
+                
+                String startTime = convert.toTimestampFormat(newStart),
+                        endTime = convert.toTimestampFormat(newEnd);
+                
+                stmt.setString(1, startTime);
+                stmt.setString(2, endTime);
+                stmt.setString(3, startTime);
+                stmt.setString(4, endTime);
+                stmt.setString(5, startTime);
+                stmt.setString(6, endTime);
+                stmt.setInt(7, userid);
+                
+                ResultSet result = stmt.executeQuery();
                 int count = 0;
                 if ( result.next() ) count = result.getInt("rowcount");
                 
