@@ -238,12 +238,18 @@ public class UserController {
         if (changeThis
                 .getEndTime()
                 .isEqual(changeThis.getStartTime())
-                || changeThis
-                        .getEndTime()
-                        .isBefore(changeThis.getStartTime())) {
+            || changeThis
+                    .getEndTime()
+                    .isBefore(changeThis.getStartTime())) {
             System.out.println("UserController.handledAppointmentChange() - End time before start time");
             return false;
         }
+        /**
+         * To-do: if only changing hour/minute of an appointment, this will be a "conflict;"
+         * the database will have the start and end time of the old appointment still.
+         * Dropping the appointment and recreating it will generate a new appointment ID, so don't
+         * do that.
+         * */
         else if (Database.findAppointment(thisUser.getID(), changeThis.getStartTime(), changeThis.getEndTime())) {
             System.out.println("UserController.handledAppointmentChange() - Time conflicts with existing appointment");
             return false;
