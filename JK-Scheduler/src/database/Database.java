@@ -454,7 +454,48 @@ public final class Database {
                 return true;
             }
 	}
-
+        
+        public static final int countConflicts(int userid, LocalDateTime start, LocalDateTime end) {
+            try {
+                if (connection == null) getConnection();
+                
+                if (!findUser(userid)) return -1;
+                
+                PreparedStatement stmt = 
+                    connection.prepareStatement("SELECT COUNT(*) AS rowcount \n" +
+                            "FROM Appointments INNER JOIN Users \n" +
+                            "ON Appointments.created_by = Users.userid \n" +
+                            "WHERE (? >= Appointments.start_time AND ? <= Appointments.end_time) \n" +
+                            "OR (? >= Appointments.start_time AND ? <= Appointments.end_time) \n" +
+                            "OR (? <= Appointments.start_time AND ? >= Appointments.end_time) \n" +
+                            "GROUP BY created_by \n" +
+                            "HAVING created_by = ?");
+                
+                String startTime = convert.toTimestampFormat(start),
+                        endTime = convert.toTimestampFormat(end);
+                
+                stmt.setString(1, startTime);
+                stmt.setString(2, startTime);
+                stmt.setString(3, endTime);
+                stmt.setString(4, endTime);
+                stmt.setString(5, startTime);
+                stmt.setString(6, endTime);
+                stmt.setInt(7, userid);
+                
+                ResultSet result = stmt.executeQuery();
+                int count = 0;
+                if (result.next()) {
+                    count = result.getInt("rowcount");
+                }
+                result.close();
+                return count;
+            } 
+            catch (SQLException e) {
+                System.out.println("findAppointment() - " + e.getMessage());
+                return -1;
+            }
+        }
+        
 	public static final int getAppID(int userid, LocalDateTime newStart, LocalDateTime newEnd) {
 		int id = -1;
 		try {

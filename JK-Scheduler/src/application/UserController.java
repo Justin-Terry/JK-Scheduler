@@ -231,35 +231,41 @@ public class UserController {
     }
 
     public static final boolean handledAppointmentChange(int app_id, AppointmentForm changeThis) {
+        LocalDateTime start = changeThis.getStartTime(),
+                end = changeThis.getEndTime();
+        
         if (thisUser.countAppointments() == 0) {
             System.out.println("UserController.handledAppointmentChange() - user has no appts.");
             return false;
         }
-        if (changeThis
-                .getEndTime()
-                .isEqual(changeThis.getStartTime())
-            || changeThis
-                    .getEndTime()
-                    .isBefore(changeThis.getStartTime())) {
+        if (start.isEqual(end) || end.isBefore(start)) {
             System.out.println("UserController.handledAppointmentChange() - End time before start time");
             return false;
         }
         /**
-         * To-do: if only changing hour/minute of an appointment, this will be a "conflict;"
-         * the database will have the start and end time of the old appointment still.
-         * Dropping the appointment and recreating it will generate a new appointment ID, so don't
-         * do that.
-         * */
-        else if (Database.findAppointment(thisUser.getID(), changeThis.getStartTime(), changeThis.getEndTime())) {
-            System.out.println("UserController.handledAppointmentChange() - Time conflicts with existing appointment");
-            return false;
-        }
-        for (Appointment a : thisUser.getAppointments()) {
-            int existingID = a.getAppID();
-            if (existingID == app_id) {
-                a.modify(changeThis);
-                Database.changeAppointment(app_id, a);
-                return true;
+         * Find ANY appointment within the desired timeslot
+         */
+        if (Database.findAppointment(thisUser.getID(), start, end)) {
+            // Find an exact appointment (the one to be modified)
+            int conflicts = Database.countConflicts(thisUser.getID(), start, end);
+            /**
+             * BUG: If the new start and end conflict with an entirely different appointment,
+             * the database table WILL have conflicting appointments. No checking is done.
+             */
+            if (conflicts == 1) {
+                for (Appointment a : thisUser.getAppointments()) {
+                    if (a.getAppID() == app_id) {
+                        a.modify(changeThis);
+                        Database.changeAppointment(app_id, a);
+                        return true;
+                    }
+                }
+                System.out.println("UserController.handledAppointmentChange() - Couldn't find appointment ID.");
+                return false;
+            }
+            else {
+                System.out.println("UserController.handledAppointmentChange() - " + conflicts + " time conflicts with existing appointment");
+                return false;
             }
         }
         return false;
