@@ -4,8 +4,12 @@ import application.AppointmentForm;
 import application.Main;
 import application.UserController;
 import application.convert;
+import java.time.LocalDateTime;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 
 public class CreateAppointmentWindow extends AppointmentWindow {
 	
@@ -13,6 +17,7 @@ public class CreateAppointmentWindow extends AppointmentWindow {
 		super();
 		stage.setTitle("Create Appointment");
 		layoutGrid();
+                scene.getStylesheets().add(getClass().getResource("material-fx-v0_3.css").toExternalForm());
 		stage.setScene(scene);
 		stage.show();
 	}
@@ -33,31 +38,35 @@ public class CreateAppointmentWindow extends AppointmentWindow {
 		EMB.getSelectionModel().select(0);
 		EPB.getSelectionModel().select(0);
 
-		submitButton.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent a){
-				AppointmentForm form =
-						new AppointmentForm(
-							nameText.getText(),
-							(String)typeOptionBox.getValue(),
-							locationText.getText(),
-							dpStart .getValue()
-									.atTime(
-											convert.to24Hour(
-													Integer.parseInt((String)SHB.getValue()),
-													(String)SPB.getValue()),
-											Integer.parseInt((String)SMB.getValue())),
-							dpEnd   .getValue()
-									.atTime(
-											convert.to24Hour(
-													Integer.parseInt((String)EHB.getValue()),
-													(String)EPB.getValue()),
-											Integer.parseInt((String)EMB.getValue())));
+		submitButton.setOnAction(e->{
+                                String name = nameText.getText(),
+                                        type = (String)typeOptionBox.getValue(),
+                                        location = locationText.getText();
+                                
+                                LocalDateTime start = dpStart.getValue()
+                                                            .atTime(
+                                                                convert.to24Hour(
+                                                                    Integer.parseInt((String)SHB.getValue()),
+                                                                    (String)SPB.getValue()),
+                                                                    Integer.parseInt((String)SMB.getValue()));
+                                LocalDateTime end = dpEnd.getValue()
+                                                        .atTime(
+                                                            convert.to24Hour(
+                                                                Integer.parseInt((String)EHB.getValue()),
+                                                                (String)EPB.getValue()),
+                                                                Integer.parseInt((String)EMB.getValue()));
+                                int alertBefore = Integer.parseInt(alertText.getText());
+                                
+				AppointmentForm form = new AppointmentForm(name, type, location, start, end, alertBefore);
 
-				if (UserController.handledAppointmentCreation(form))
+				if (UserController.handledAppointmentCreation(form)) {
 					Main.getWindowManager().setCalendarView();
 					stage.close();
-				
-			}
+                                }
+                                else {
+                                    new Alert(AlertType.ERROR, "Invalid field(s).", ButtonType.OK)
+                                            .showAndWait();
+                                }
 		});
 	}
 	
