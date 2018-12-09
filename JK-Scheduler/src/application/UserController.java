@@ -4,6 +4,7 @@ import database.Database;
 
 import java.io.*;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -76,7 +77,7 @@ public class UserController {
                 while (reader.hasNextLine()) {
                     String eventLine = reader.nextLine();
 //                    String pattern = "Event title=(.*)? \\| Type=(Private|Public) \\| Location=(.*)? \\| Start=\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d \\| End=\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d";
-                    String pattern = "Event title=.+?  [|]  Type=(Private|Public)  [|]  Location=.+?  [|]  Start=\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}[.]\\d  [|]  End=\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}[.]\\d";
+                    String pattern = "Event title=.+?  [|]  Type=(Private|Public)  [|]  Location=.+?  [|]  Start=\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}[.]\\d  [|]  End=\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}[.]\\d  [|]  Notify=\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}[.]\\d";
                     if (!eventLine.matches(pattern)) {
                         System.out.println("UserController.importSchedule() - File format is incorrect");
                         return;
@@ -84,7 +85,7 @@ public class UserController {
 
                     String[] args = eventLine.split("  [|]  ");
 
-                    if (args.length != 5) {
+                    if (args.length != 6) {
                         System.out.println("UserController.importSchedule() - Mismatched number of arguments");
                         return;
                     }
@@ -92,11 +93,14 @@ public class UserController {
                     
                     
                     String s = args[3].substring(6),
-                            e = args[4].substring(4);
+                            e = args[4].substring(4),
+                            n = args[5].substring(7);
                     LocalDateTime start = convert.toLocalDateTime(s),
-                                end = convert.toLocalDateTime(e);
+                                end = convert.toLocalDateTime(e),
+                                notify = convert.toLocalDateTime(n);
+                    int alert = (int)ChronoUnit.MINUTES.between(notify, start);
                     
-                    AppointmentForm addThis = new AppointmentForm(args[0].substring(12), args[1].substring(5), args[2].substring(9), start, end);
+                    AppointmentForm addThis = new AppointmentForm(args[0].substring(12), args[1].substring(5), args[2].substring(9), start, end, alert);
 
                     if (Database.findAppointment(thisUser.getID(), start, end)) {
                         System.out.println("UserController.importSchedule() - Appointment time conflict");
@@ -232,7 +236,8 @@ public class UserController {
 
     public static final boolean handledAppointmentChange(int app_id, AppointmentForm changeThis) {
         LocalDateTime start = changeThis.getStartTime(),
-                end = changeThis.getEndTime();
+                end = changeThis.getEndTime(),
+                notify = changeThis.getNotificationTime();
         
         if (thisUser.countAppointments() == 0) {
             System.out.println("UserController.handledAppointmentChange() - user has no appts.");
@@ -240,6 +245,10 @@ public class UserController {
         }
         if (start.isEqual(end) || end.isBefore(start)) {
             System.out.println("UserController.handledAppointmentChange() - End time before start time");
+            return false;
+        }
+        if (notify.isAfter(start) || notify.isEqual(start)) {
+            System.out.println("UserController.handledAppointmentChange() - Alert time before start time");
             return false;
         }
         /**
