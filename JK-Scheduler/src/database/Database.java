@@ -9,6 +9,7 @@ import static java.lang.System.exit;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -61,11 +62,17 @@ public final class Database {
 			if (connection == null)
 				getConnection();
 
-			String str = "CREATE TABLE Appointments (\n" + "    app_id      INT GENERATED ALWAYS AS IDENTITY,\n"
-					+ "    name        VARCHAR(255) NOT NULL,\n" + "    type        VARCHAR(255) NOT NULL,\n"
-					+ "    location    VARCHAR(255) NOT NULL,\n" + "    start_time  TIMESTAMP NOT NULL,\n"
-					+ "    end_time    TIMESTAMP NOT NULL,\n" + "    created_by  INT NOT NULL,\n" + "\n"
-					+ "    PRIMARY KEY(app_id),\n" + "    FOREIGN KEY(created_by) REFERENCES Users(userid)\n" + ")";
+			String str =      "CREATE TABLE Appointments (\n" 
+                                        + "    app_id      INT GENERATED ALWAYS AS IDENTITY,\n"
+					+ "    name        VARCHAR(255) NOT NULL,\n" 
+                                        + "    type        VARCHAR(255) NOT NULL,\n"
+					+ "    location    VARCHAR(255) NOT NULL,\n" 
+                                        + "    start_time  TIMESTAMP NOT NULL,\n"
+					+ "    end_time    TIMESTAMP NOT NULL,\n"
+                                        + "    notify_time TIMESTAMP NOT NULL,\n"
+                                        + "    created_by  INT NOT NULL,\n" + "\n"
+					+ "    PRIMARY KEY(app_id),\n" 
+                                        + "    FOREIGN KEY(created_by) REFERENCES Users(userid)\n" + ")";
 
 			Statement stmt = connection.createStatement();
 			stmt.execute(str);
@@ -551,14 +558,15 @@ public final class Database {
 			}
 
 			PreparedStatement stmt = connection.prepareStatement(
-					"INSERT INTO Appointments (name, type, location, start_time, end_time, created_by) "
-							+ "VALUES (?, ?, ?, ?, ?, ?)");
+					"INSERT INTO Appointments (name, type, location, start_time, end_time, notify_time, created_by) "
+							+ "VALUES (?, ?, ?, ?, ?, ?, ?)");
 			stmt.setString(1, appointment.getName());
 			stmt.setString(2, appointment.getType());
 			stmt.setString(3, appointment.getLocation());
 			stmt.setString(4, convert.toTimestampFormat(appointment.getStart()));
 			stmt.setString(5, convert.toTimestampFormat(appointment.getEnd()));
-			stmt.setString(6, Integer.toString(appointment.getCreator()));
+                        stmt.setString(6, convert.toTimestampFormat(appointment.getNotificationTime()));
+			stmt.setString(7, Integer.toString(appointment.getCreator()));
 			stmt.execute();
 //			addNotification(appointment.createNotification());
 		} catch (SQLException e) {
@@ -585,13 +593,14 @@ public final class Database {
 			}
 
 			PreparedStatement stmt = connection.prepareStatement("UPDATE Appointments \n"
-					+ "SET name = ?, type = ?, location = ?, start_time = ?, end_time = ? \n" + "WHERE app_id = ?");
+					+ "SET name = ?, type = ?, location = ?, start_time = ?, end_time = ?, notify_time = ? \n" + "WHERE app_id = ?");
 			stmt.setString(1, appointment.getName());
 			stmt.setString(2, appointment.getType());
 			stmt.setString(3, appointment.getLocation());
 			stmt.setString(4, convert.toTimestampFormat(appointment.getStart()));
 			stmt.setString(5, convert.toTimestampFormat(appointment.getEnd()));
-			stmt.setString(6, Integer.toString(app_id));
+                        stmt.setString(6, convert.toTimestampFormat(appointment.getNotificationTime()));
+			stmt.setString(7, Integer.toString(app_id));
 
 			stmt.executeUpdate();
 		} catch (SQLException e) {
@@ -645,10 +654,15 @@ public final class Database {
 				int numCols = rsmd.getColumnCount();
 
 				do {
+                                        LocalDateTime start = convert.toLocalDateTime(rs.getString("start_time")),
+                                                end = convert.toLocalDateTime(rs.getString("end_time")),
+                                                notify = convert.toLocalDateTime(rs.getString("notify_time"));
+                                        
+                                        int timeDiff = (int)ChronoUnit.MINUTES.between(notify, start);
+                                        
 					rowCount++;
 					Appointment a = new Appointment(rs.getString("name"), rs.getString("type"),
-							rs.getString("location"), convert.toLocalDateTime(rs.getString("start_time")),
-							convert.toLocalDateTime(rs.getString("end_time")), userid);
+							rs.getString("location"), start, end, timeDiff, userid);
 					a.setAppID(rs.getInt("app_id"));
 					appointments.add(a);
 				} while (rs.next());
