@@ -25,7 +25,10 @@ public class WindowManager {
 		mainStage.setTitle("JK Scheduler");
 		mainStage.setMaximized(true);
 		bp = new BorderPane();
-		Scene mainScene = new Scene(bp, mainStage.getHeight(), mainStage.getWidth());
+//                bp.setStyle("-fx-background-color: #FFFFFF");
+		CustomScene mainScene = new CustomScene(bp, mainStage.getHeight(), mainStage.getWidth());
+//                mainScene.getStylesheets().add(getClass().getResource("material-fx-v0_3.css").toExternalForm());
+                
 		bp.setTop(menuCon.getMenuBar());
 		setMainStage(mainScene);
 		showMainStage();	
@@ -65,7 +68,7 @@ public class WindowManager {
 		return mainStage;
 	}
 	
-	public void setMainStage(Scene s) {
+	public void setMainStage(CustomScene s) {
 		mainStage.setScene(s);
 	}
 	
