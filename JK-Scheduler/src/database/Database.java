@@ -15,8 +15,8 @@ import java.util.HashMap;
 
 public final class Database {
 	private static Connection connection = null;
-	private static String dbPath = "jdbc:derby://localhost:1527/SchedulerDB;create=true";
-//        private static String dbPath = "jdbc:derby:SchedulerDB;create=true";
+	//private static String dbPath = "jdbc:derby://localhost:1527/SchedulerDB;create=true";
+    private static String dbPath = "jdbc:derby:SchedulerDB;create=true";
 	private HashMap<String, String> creds = new HashMap<String, String>();// <username, password>
 
 	public Database() {
@@ -568,7 +568,7 @@ public final class Database {
                         stmt.setString(6, convert.toTimestampFormat(appointment.getNotificationTime()));
 			stmt.setString(7, Integer.toString(appointment.getCreator()));
 			stmt.execute();
-//			addNotification(appointment.createNotification());
+			addNotification(appointment.createNotification());
 		} catch (SQLException e) {
 			System.out.println("addAppointment() - " + e.getMessage());
 		}

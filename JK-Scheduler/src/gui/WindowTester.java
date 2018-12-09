@@ -22,12 +22,12 @@ public class WindowTester extends Application {
 
         User thisUser = new User("jim", 6);
         thisUser.setID(5);
-        thisUser.addAppointment(new Appointment(String.valueOf((char)6),
-                "idk",
-                "anywhere",
-                convert.toLocalDateTime("2018-11-09 04:44:00.0"),
-                convert.toLocalDateTime("2018-11-09 04:44:00.0"),
-                6));
+       // thisUser.addAppointment(new Appointment(String.valueOf((char)6),
+       //         "idk",
+       //         "anywhere",
+        //        convert.toLocalDateTime("2018-11-09 04:44:00.0"),
+        //        convert.toLocalDateTime("2018-11-09 04:44:00.0"),
+        //        6));
 
 
 

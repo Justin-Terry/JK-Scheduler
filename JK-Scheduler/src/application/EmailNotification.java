@@ -1,3 +1,9 @@
+/* Significant portions of this class provided
+ * by Amazon as part of their Amazon Simple Email
+ * Service. Used to ensure a the class would  work
+ * with their API.
+ */
+
 package application;
 import java.time.LocalDateTime;
 import java.util.Properties;

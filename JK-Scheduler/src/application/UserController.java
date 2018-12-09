@@ -207,6 +207,8 @@ public class UserController {
             return false;
         } else {
             Appointment appt = new Appointment(form, thisUser.getID());
+            appt.setCreatedBy(thisUser);
+            appt.createNotification();
             Database.addAppointment(appt);
             int newID = Database.getAppID(thisUser.getID(), start, end);
             appt.setAppID(newID);

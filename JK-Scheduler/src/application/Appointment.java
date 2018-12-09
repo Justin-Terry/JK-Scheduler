@@ -58,12 +58,12 @@ public class Appointment implements Comparable<Appointment> {
         	    "<p>Event Name: " + name + "</p>",
         	    "<p>Event Type: " + type + "</p>",
         	    "<p>Event Location: " + location + "</p>",
-        	    "<p>Event Time: " + start_time.getHour() + ":" + start_time.getMinute() + "</p>",
+        	    "<p>Event Time: " + String.format("%02d", start_time.getHour()) + ":" + String.format("%02d", start_time.getMinute()) + "</p>",
         	    "<p>Event Date: " + start_time.getMonth() + " " + start_time.getDayOfMonth() + ", " + start_time.getYear() + "</p>"
         	);
     	
     	//-- NEED TO REPLACE MY EMAIL ADDRESS WITH USER EMAIL
-    	notification = new EmailNotification(sub, message, "z400jt61@gmail.com", notification_time);
+    	notification = new EmailNotification(sub, message, createdBy.getEmail(), notification_time);
     	return notification;
     }
     
@@ -156,7 +156,7 @@ public class Appointment implements Comparable<Appointment> {
         return this.getStart().compareTo(other.getStart());
     }
 
-    public static void main(String[] args) {
+//    public static void main(String[] args) {
 //        Appointment app = new Appointment(
 //                String.valueOf((char)6),
 //                "idk",
@@ -166,6 +166,6 @@ public class Appointment implements Comparable<Appointment> {
 //                6
 //        );
 
-        System.out.println(app);
-    }	
+        //System.out.println(app);
+//    }	
 }
