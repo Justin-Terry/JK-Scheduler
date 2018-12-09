@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 public class SettingsWindow {
 	private Stage stage = new Stage();
 	private GridPane grid = new GridPane();
-	private Scene scene = new Scene(grid);
+	private Scene scene = new CustomScene(grid);
 	private String[] labelStrings = {"Calendar Color", "Calendar Range"};
 	private Settings settings;
 	
@@ -33,25 +33,28 @@ public class SettingsWindow {
 		MenuItem dayRange = new MenuItem("Day");
 		MenuItem weekRange = new MenuItem("Week");
 		MenuItem monthRange = new MenuItem("Month");
-		Button doneButton = new Button("Submit Changes");
+		Button doneButton = new CustomButton("Submit Changes", scene);
 		
 		calendarRangeButton.getItems().addAll(dayRange,weekRange,monthRange);
 		
 		dayRange.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent a) {
 				settings.setCalendarRange(0);
+                                calendarRangeButton.setText(dayRange.getText());
 			}
 		});
 		
 		weekRange.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent a) {
 				settings.setCalendarRange(1);
+                                calendarRangeButton.setText(weekRange.getText());
 			}
 		});
 		
 		monthRange.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent a) {
 				settings.setCalendarRange(2);
+                                calendarRangeButton.setText(monthRange.getText());
 			}
 		});		
 		
