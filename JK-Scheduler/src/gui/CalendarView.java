@@ -24,7 +24,7 @@ public abstract class CalendarView {
 		dayNames.put(3, "Wednesday");
 		dayNames.put(4, "Thursday");
 		dayNames.put(5, "Friday");
-		dayNames.put(6, "Sunday");
+		dayNames.put(6, "Saturday");
 		
 	};
 	
