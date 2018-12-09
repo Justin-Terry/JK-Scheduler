@@ -39,14 +39,15 @@ public class LoginWindow {
         window.initStyle(StageStyle.UNDECORATED);
         window.initModality(Modality.APPLICATION_MODAL);
         GridPane grid = new GridPane();
-        Button loginButton = new Button("Login");
-        Button newAccountButton = new Button("Create Account");
+//        Button loginButton = new Button("Login");
+        
         grid.setVgap(25);
         grid.setHgap(25);
         grid.setPadding(new Insets(25));
         ArrayList<TextField> credentials = new ArrayList();
 //        String[] fieldNames = {"Login", "Username", "Password"};
-        Scene scene = new Scene(grid);
+        CustomScene scene = new CustomScene(grid);
+        scene.getStylesheets().add(getClass().getResource("material-fx-v0_3.css").toExternalForm());
 
         TextField uf = new TextField();
         PasswordField pf = new PasswordField();
@@ -61,20 +62,8 @@ public class LoginWindow {
         credentials.add(uf);
         credentials.add(pf);
 
-//        for (int i = 0; i < fieldNames.length; i++) {
-//            grid.add(new Label(fieldNames[i]), 0, i);
-//            if (i > 0) {
-//                if (i == 2) {
-////                    pf = new PasswordField();
-//                    grid.add(pf, 1, i);
-//                    credentials.add(pf);
-//                } else {
-//                    TextField tf = new TextField();
-//                    grid.add(tf, 1, i);
-//                    credentials.add(tf);
-//                }
-//            }
-//        }
+        CustomButton loginButton = new CustomButton("Login", scene),
+                newAccountButton = new CustomButton("Create Account", scene);
         grid.add(loginButton, 0, 3);
         grid.add(newAccountButton, 1, 3);
 
@@ -113,26 +102,16 @@ public class LoginWindow {
     }
 
     private void performLogin(ArrayList<TextField> credentials, Pane pane) {
-        Alert badLogin = new Alert(AlertType.ERROR, "Invalid Username or Password", ButtonType.OK);
         String username = credentials.get(0).getText();
         String password = credentials.get(1).getText();
 
         if (UserController.handledLogin(username, password)) {
-            // Inserting test appointment into arraylist, bypasses DB
-
-//                                	Main.getCurrentUser().addAppointment(new Appointment("TEST", "Public", "TEST", LocalDateTime.now(), LocalDateTime.now().plusHours(2), Main.getCurrentUser().getID()));
-//                                	Main.getCurrentUser().addAppointment(new Appointment("TEST2", "Public", "TEST2", LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(1).plusHours(2), Main.getCurrentUser().getID()));
-//                                	Main.getCurrentUser().addAppointment(new Appointment("TEST3", "Public", "TEST3", LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(3).plusHours(2), Main.getCurrentUser().getID()));
-//                                	Main.getCurrentUser().addAppointment(new Appointment("TEST4", "Public", "TEST4", LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(3).plusHours(2), Main.getCurrentUser().getID()));
-//                                	for(int i = 0; i < 50; i++) {
-//                                		Main.getCurrentUser().addAppointment(new Appointment("TEST" + i, "Public", "TEST" + i, LocalDateTime.now().plusDays(i), LocalDateTime.now().plusDays(i).plusHours(2), Main.getCurrentUser().getID()));
-//                                	}
-            // Reset the calendar view to include new users appointments
-//                                	Main.getWindowManager().setCalendarView();
             Main.getWindowManager().setCalendarView();
             pane.setEffect(new BoxBlur(0, 0, 0));
             window.close();
-        } else {
+        } 
+        else {
+            Alert badLogin = new Alert(AlertType.ERROR, "Invalid Username or Password", ButtonType.OK);
             badLogin.showAndWait();
         }
     }

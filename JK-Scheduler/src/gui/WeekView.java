@@ -23,7 +23,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 public class WeekView extends CalendarView{
-	private Button nextWeekButton, previousWeekButton;
+	private CustomButton nextWeekButton, previousWeekButton;
 	private int numberOfDays;
 	private int numberOfColumns = 7;
 	private int numberOfRows = 3;
@@ -57,8 +57,8 @@ public class WeekView extends CalendarView{
 		DateTimeFormatter weekFormat = DateTimeFormatter.ofPattern("MMM dd");
 		weekHeader = firstDayOfWeek.format(weekFormat) + "-" + lastDayOfWeek.format(weekFormat);
 		
-		nextWeekButton = new Button(">>>");
-		previousWeekButton = new Button("<<<");
+		nextWeekButton = new CustomButton(">>>", Main.getWindowManager().getMainStage().getScene());
+		previousWeekButton = new CustomButton("<<<", Main.getWindowManager().getMainStage().getScene());
 		
 		weekGrid.add(previousWeekButton, 0, 0);
 		weekGrid.add(nextWeekButton, 6, 0);		

@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -22,7 +23,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 public class MonthView extends CalendarView {
-	private Button nextMonthButton, previousMonthButton;
+	private CustomButton nextMonthButton, previousMonthButton;
 	private int numberOfDays;
 	private int numberOfColumns = 7;
 	private int numberOfRows = 8;
@@ -50,8 +51,8 @@ public class MonthView extends CalendarView {
 
 	public void createMonthScene(Month month) {
 		dateBoxes = new ArrayList<DateBox>();
-		nextMonthButton = new Button(" >>> ");
-		previousMonthButton = new Button(" <<< ");
+		nextMonthButton = new CustomButton(" >>> ", Main.getWindowManager().getMainStage().getScene());
+		previousMonthButton = new CustomButton(" <<< ", Main.getWindowManager().getMainStage().getScene());
 		monthGrid = new GridPane();
 		monthGrid.setPadding(new Insets(25));
 		int numberOfDaysAdded = 0;
@@ -110,19 +111,33 @@ public class MonthView extends CalendarView {
 			}
 		}
 
+//                nextMonthButton.getStyleClass().add("button-raised");
+//        nextMonthButton.setOnMouseEntered(e->{
+//            Main.getWindowManager().getMainStage().getScene().setCursor(Cursor.HAND);
+//        });
+//        nextMonthButton.setOnMouseExited(e->{
+//            Main.getWindowManager().getMainStage().getScene().setCursor(Cursor.DEFAULT);
+//        });
 		nextMonthButton.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent a) {
 				Main.getWindowManager().setCalendarView(getDate().plusDays(getDaysToEndOfMonth()+1));
 			}
 		});
 		
+                
+//                previousMonthButton.setOnMouseEntered(e->{
+//            Main.getWindowManager().getMainStage().getScene().setCursor(Cursor.HAND);
+//        });
+//        previousMonthButton.setOnMouseExited(e->{
+//            Main.getWindowManager().getMainStage().getScene().setCursor(Cursor.DEFAULT);
+//        });
 		previousMonthButton.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent a) {
 				Main.getWindowManager().setCalendarView(getDate().minusDays(calendarDate.getDayOfMonth()+1));
 			}
 		});
 		
-
+                monthNameLabel.requestFocus();
 	}
 
 	public GridPane getCalendarDisplay() {

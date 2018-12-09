@@ -32,7 +32,7 @@ public class DayView extends CalendarView {
 	private ColumnConstraints appointmentsCols = new ColumnConstraints();
 	private StackPane dayStack;
 	private GridPane dayGrid, appointmentsGrid;
-	private Button previousDayButton, nextDayButton;
+	private CustomButton previousDayButton, nextDayButton;
 
 	public DayView() {
 		createDisplay();
@@ -54,8 +54,8 @@ public class DayView extends CalendarView {
 		DateTimeFormatter dayFormat = DateTimeFormatter.ofPattern("MMM dd, uuuu");
 		Label dayLabel = new Label(calendarDate.format(dayFormat));
 		dayLabel.setFont(Font.font("Arial", FontWeight.BOLD, 48));
-		previousDayButton = new Button("<<<");
-		nextDayButton = new Button(">>>");
+		previousDayButton = new CustomButton("<<<", Main.getWindowManager().getMainStage().getScene());
+		nextDayButton = new CustomButton(">>>", Main.getWindowManager().getMainStage().getScene());
 		dayGrid.add(dayLabel, 1, 0);
 		appointmentsGrid.add(previousDayButton, 0, 0);
 		appointmentsGrid.add(nextDayButton, 5, 0);
