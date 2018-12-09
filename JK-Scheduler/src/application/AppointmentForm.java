@@ -12,14 +12,16 @@ public class AppointmentForm {
     private final String location;
     private final LocalDateTime startTime;
     private final LocalDateTime endTime;
+    private final LocalDateTime notificationTime;
 //    private User createdBy;
 
-    public AppointmentForm(String name, String type, String location, LocalDateTime start, LocalDateTime end) {
+    public AppointmentForm(String name, String type, String location, LocalDateTime start, LocalDateTime end, int minutesBefore) {
         this.name = name;
         this.type = type;
         this.location = location;
         this.startTime = start;
         this.endTime = end;
+        this.notificationTime = this.startTime.minusMinutes(minutesBefore);
     }
 
     public String getName() {
@@ -40,5 +42,9 @@ public class AppointmentForm {
 
     public LocalDateTime getEndTime() {
         return endTime;
+    }
+    
+    public LocalDateTime getNotificationTime() {
+        return notificationTime;
     }
 }
