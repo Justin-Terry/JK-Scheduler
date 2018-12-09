@@ -26,7 +26,7 @@ import java.util.ArrayList;
 public class CreateUserWindow {
 	Stage stage;
 	GridPane gp;
-	Scene scene;
+	CustomScene scene;
 
 	private static final String[] fieldNames = {  "Username", "Password", "Password Confirmation",
 											"First Name", "Last Name",
@@ -46,7 +46,7 @@ public class CreateUserWindow {
 		gp.setPadding(new Insets(10));
 		gp.setVgap(10);
 		gp.setHgap(10);
-		scene = new Scene(gp, 420, 36*(fieldNames.length+2));
+		scene = new CustomScene(gp, 420, 36*(fieldNames.length+2));
 
 		layoutGrid();
 		stage.setScene(scene);
@@ -56,8 +56,9 @@ public class CreateUserWindow {
 	public void layoutGrid() {
 		// Keeps window on top of everything else
 		stage.initModality(Modality.APPLICATION_MODAL);
-		stage.setMinHeight(40*(fieldNames.length+1));
-		stage.setMinWidth(300);
+//		stage.setMinHeight(40*(fieldNames.length+1));
+                stage.setMinHeight(618);
+		stage.setMinWidth(484);
 		
 		// ColumnConstraints to define how much of the scene each column should take up
 		ColumnConstraints col1 = new ColumnConstraints();
@@ -66,7 +67,7 @@ public class CreateUserWindow {
 		col2.setPercentWidth(66);
 		gp.getColumnConstraints().addAll(col1, col2);
 		
-		Button submitButton = new Button("Submit");
+		CustomButton submitButton = new CustomButton("Submit", scene);
 
 		int i = 0;
 		ArrayList<TextField> textfields = new ArrayList<>();
@@ -116,14 +117,7 @@ public class CreateUserWindow {
 					
 				}
 				else {
-					// Submission error handling
-					Label error = new Label("Error - Invalid field(s)");
-					/**
-					 * add error message below submit button;
-					 * number of rows = all fields + submit button + error message
-					 */
-					gp.add(error, 0, getNumFields() + 1 + 1);
-					gp.setHalignment(error, HPos.CENTER);
+                                    new Alert(AlertType.ERROR, "Invalid field(s).", ButtonType.OK).showAndWait();
 				}
 			}
 		});
