@@ -17,7 +17,7 @@ public class Appointment implements Comparable<Appointment> {
     private int created_by;
     private User createdBy;
     
-    public Appointment(String name, String type, String location, LocalDateTime start, LocalDateTime end, int userid) {
+    public Appointment(String name, String type, String location, LocalDateTime start, LocalDateTime end, int minutesBefore, int userid) {
         this.name = name;
         this.type = type;
         this.location = location;
@@ -25,7 +25,7 @@ public class Appointment implements Comparable<Appointment> {
         this.end_time = end;
         this.created_by = userid;    
         //-- This needs to be set programmatically
-        this.notification_time = start_time.minusMinutes(1);
+        this.notification_time = start_time.minusMinutes(minutesBefore);
     }
 
     public Appointment(AppointmentForm form, int userid) {
@@ -36,7 +36,7 @@ public class Appointment implements Comparable<Appointment> {
             this.end_time = form.getEndTime();
             this.created_by = userid;
             //-- This needs to be set programmatically
-            this.notification_time = start_time.minusMinutes(1);
+            this.notification_time = form.getNotificationTime();
             
     }
 
@@ -46,6 +46,7 @@ public class Appointment implements Comparable<Appointment> {
             this.location = form.getLocation();
             this.start_time = form.getStartTime();
             this.end_time = form.getEndTime();
+            this.notification_time = form.getNotificationTime();
     }
     
     public EmailNotification createNotification() {
@@ -109,6 +110,10 @@ public class Appointment implements Comparable<Appointment> {
     public void setEnd(final LocalDateTime end) {
             this.end_time = end;
     }
+    
+    public LocalDateTime getNotificationTime() {
+        return notification_time;
+    }
 
     public int getCreator() {
             return created_by;
@@ -137,8 +142,13 @@ public class Appointment implements Comparable<Appointment> {
     @Override
     public final String toString() {
             return String.format(
-                            "Event title=%s  |  Type=%s  |  Location=%s  |  Start=%s  |  End=%s",
-                            getName(), getType(), getLocation(), convert.toTimestampFormat(getStart()), convert.toTimestampFormat(getEnd()));
+                            "Event title=%s  |  Type=%s  |  Location=%s  |  Start=%s  |  End=%s  |  Notify=%s",
+                            getName(), 
+                            getType(), 
+                            getLocation(), 
+                            convert.toTimestampFormat(getStart()), 
+                            convert.toTimestampFormat(getEnd()),
+                            convert.toTimestampFormat(getNotificationTime()));
     }
     
     @Override
@@ -147,14 +157,14 @@ public class Appointment implements Comparable<Appointment> {
     }
 
     public static void main(String[] args) {
-        Appointment app = new Appointment(
-                String.valueOf((char)6),
-                "idk",
-                "anywhere",
-                convert.toLocalDateTime("2018-11-09 04:44:00.0"),
-                                convert.toLocalDateTime("2018-11-09 04:44:00.0"),
-                6
-        );
+//        Appointment app = new Appointment(
+//                String.valueOf((char)6),
+//                "idk",
+//                "anywhere",
+//                convert.toLocalDateTime("2018-11-09 04:44:00.0"),
+//                                convert.toLocalDateTime("2018-11-09 04:44:00.0"),
+//                6
+//        );
 
         System.out.println(app);
     }	
