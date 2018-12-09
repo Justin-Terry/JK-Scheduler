@@ -28,7 +28,8 @@ public class ChangePasswordWindow {
 		// Keep stage on top
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.setTitle("Change Username");
-		scene = new Scene(vBox, 300,225);
+		scene = new CustomScene(vBox, 316, 340);
+                stage.sizeToScene();
 		vBox.setAlignment(Pos.CENTER);
 		// Set Spacing between elements in the box
 		vBox.setSpacing(10);
@@ -45,7 +46,7 @@ public class ChangePasswordWindow {
 		TextField confirmPassField = new PasswordField();
 		confirmPassField.setPromptText("Re-enter new password");
 
-		Button submitButton = new Button("Submit");
+		Button submitButton = new CustomButton("Submit", scene);
 		
 		vBox.getChildren().addAll(currentPassLabel, oldPassField, newPassLabel, newPassField,confirmPassLabel,confirmPassField, submitButton);
 		stage.setScene(scene);

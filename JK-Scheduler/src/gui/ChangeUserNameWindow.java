@@ -27,7 +27,7 @@ public class ChangeUserNameWindow {
 		// Keep stage on top
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.setTitle("Change Username");
-		scene = new Scene(vBox, 300, 200);
+		scene = new CustomScene(vBox, 300, 200);
 		vBox.setAlignment(Pos.CENTER);
 		// Set Spacing between elements in the box
 		vBox.setSpacing(10);
@@ -38,7 +38,7 @@ public class ChangeUserNameWindow {
 		Label oldNameField = new Label(Main.getCurrentUser().getUsername());
 		TextField newNameField = new TextField();
 		newNameField.setPromptText("Enter new username");
-		Button submitButton = new Button("Submit");
+		Button submitButton = new CustomButton("Submit", scene);
 
 		vBox.getChildren().addAll(oldNameLabel, oldNameField, newNameLabel, newNameField, submitButton);
 		stage.setScene(scene);
