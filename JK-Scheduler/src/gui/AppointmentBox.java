@@ -21,8 +21,8 @@ public class AppointmentBox {
 	public AppointmentBox(Appointment a) {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("hh:mm");
                 nameLabel = new Label(  "[" + a.getStart().format(dtf)+ " " + convert.toPeriod(a.getStart()) 
-                                        + " - " + a.getEnd().format(dtf)+ " " + convert.toPeriod(a.getEnd()) + "]" 
-                                        + " - " + a.getName());
+                                        + " - " + a.getEnd().format(dtf)+ " " + convert.toPeriod(a.getEnd()) + "] " 
+                                        + a.getName());
 //		nameLabel = new Label(a.getStart().format(dtf) + " - " + a.getName());
 		apptPane = new Pane();
 		apptPane.setPadding(new Insets(2));
