@@ -16,11 +16,13 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 public class ChangeUserInfoWindow {
     Stage stage;
     GridPane gp;
-    Scene scene;
+    CustomScene scene;
 
     private static final String[] fieldNames = {"First Name", "Last Name",
                                                 "Phone Number", "E-Mail" ,
@@ -38,7 +40,7 @@ public class ChangeUserInfoWindow {
         gp.setPadding(new Insets(10));
         gp.setVgap(10);
         gp.setHgap(10);
-        scene = new Scene(gp, 420, 36*(fieldNames.length+2));
+        scene = new CustomScene(gp, 420, 36*(fieldNames.length+2));
 
         layoutGrid();
         stage.setScene(scene);
@@ -48,8 +50,10 @@ public class ChangeUserInfoWindow {
     public void layoutGrid() {
         // Keeps window on top of everything else
         stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setMinHeight(40*(fieldNames.length+1));
-        stage.setMinWidth(300);
+        stage.setMinWidth(436);
+        stage.setMinHeight(472);
+//        stage.setMinHeight(40*(fieldNames.length+1));
+//        stage.setMinWidth(300);
 
         // ColumnConstraints to define how much of the scene each column should take up
         ColumnConstraints col1 = new ColumnConstraints();
@@ -58,7 +62,7 @@ public class ChangeUserInfoWindow {
         col2.setPercentWidth(66);
         gp.getColumnConstraints().addAll(col1, col2);
 
-        Button submitButton = new Button("Submit");
+        CustomButton submitButton = new CustomButton("Submit", scene);
 
         int i = 0;
         ArrayList<TextField> textfields = new ArrayList<>();
@@ -92,14 +96,8 @@ public class ChangeUserInfoWindow {
                     stage.close();
                 }
                 else {
-                    // Submission error handling
-                    Label error = new Label("Error - Invalid field(s)");
-                    /**
-                     * add error message below submit button;
-                     * number of rows = all fields + submit button + error message
-                     */
-                    gp.add(error, 0, getNumFields() + 1 + 1);
-                    gp.setHalignment(error, HPos.CENTER);
+                    new Alert(Alert.AlertType.ERROR, "Invalid field(s) entered.", ButtonType.OK)
+                            .showAndWait();
                 }
             }
         });
